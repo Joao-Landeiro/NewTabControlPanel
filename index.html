@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #161b22;
+            color: #58a6ff;
+            padding: 15px 30px;
+            border-bottom: 2px solid #30363d;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        
+        .layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: calc(100vh - 56px);
+            gap: 0;
+            flex: 1;
+        }
+        
+        .top-left {
+            grid-column: 1;
+            grid-row: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0;
+        }
+        
+        .timer-section {
+            background: #161b22;
+            padding: 30px;
+            border-right: 1px solid #30363d;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .task-section {
+            background: #161b22;
+            padding: 30px;
+            border-right: 1px solid #30363d;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .links-section {
+            background: #161b22;
+            padding: 30px;
+            border-right: 1px solid #30363d;
+            border-bottom: 1px solid #30363d;
+            overflow-y: auto;
+        }
+        
+        .trello-section {
+            grid-column: 1;
+            grid-row: 2;
+            background: #161b22;
+            border-right: 1px solid #30363d;
+            overflow: hidden;
+        }
+        
+        .trello-section iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .notes-section {
+            grid-column: 2;
+            grid-row: 1;
+            background: #0d1117;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #30363d;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .projects-section {
+            grid-column: 2;
+            grid-row: 2;
+            background: #161b22;
+            padding: 30px;
+            border-right: 1px solid #30363d;
+            overflow-y: auto;
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            color: #58a6ff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            margin-bottom: 0;
+        }
+        
+        .config-link {
+            color: #79c0ff;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+        
+        .config-link:hover {
+            color: #a5d6ff;
+            text-decoration: underline;
+        }
+        
+        /* Timer Section */
+        
+        .activity-matrix {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+        }
+        
+        .activity-cell {
+            width: 8px;
+            height: 8px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 1px;
+            transition: background 0.2s;
+        }
+        
+        .activity-cell.level-0 {
+            background: #0d1117;
+        }
+        
+        /* Timer duration colors */
+        .activity-cell.timer-5 {
+            background: #58a6ff;  /* Light blue - 5 min */
+        }
+        
+        .activity-cell.timer-15 {
+            background: #1f6feb;  /* Medium blue - 15 min */
+        }
+        
+        .activity-cell.timer-30 {
+            background: #8b6bbe;  /* Light purple-blue - 30 min */
+        }
+        
+        .activity-cell.timer-45 {
+            background: #6e40c9;  /* Medium purple - 45 min */
+        }
+        
+        .activity-cell.timer-60 {
+            background: #8957e5;  /* Bright purple - 60 min */
+        }
+        
+        .activity-cell.timer-custom {
+            background: #d29922;  /* Gold/orange - custom */
+        }
+        
+        .timer-presets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .timer-preset {
+            padding: 10px 12px;
+            font-size: 12px;
+            white-space: nowrap;
+            aspect-ratio: 1.2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            position: relative;
+            transition: background 0.2s, opacity 0.2s;
+        }
+        
+        .timer-preset .timer-label {
+            display: block;
+        }
+        
+        .timer-preset .timer-display {
+            display: none;
+            font-size: 10px;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .timer-preset .timer-reset {
+            display: none;
+            font-size: 8px;
+            opacity: 0.7;
+            position: absolute;
+            bottom: 4px;
+        }
+        
+        .timer-preset.active .timer-label {
+            display: none;
+        }
+        
+        .timer-preset.active .timer-display {
+            display: block;
+        }
+        
+        .timer-preset.paused .timer-reset {
+            display: block;
+        }
+        
+        .timer-preset.inactive {
+            background: #21262d !important;
+            color: #6e7681;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .timer-preset[data-minutes="5"] {
+            background: #58a6ff;
+            color: #0d1117;
+        }
+        
+        .timer-preset[data-minutes="5"]:hover:not(.inactive) {
+            background: #79c0ff;
+        }
+        
+        .timer-preset[data-minutes="15"] {
+            background: #1f6feb;
+        }
+        
+        .timer-preset[data-minutes="15"]:hover:not(.inactive) {
+            background: #388bfd;
+        }
+        
+        .timer-preset[data-minutes="30"] {
+            background: #8b6bbe;
+        }
+        
+        .timer-preset[data-minutes="30"]:hover:not(.inactive) {
+            background: #a084ca;
+        }
+        
+        .timer-preset[data-minutes="45"] {
+            background: #6e40c9;
+        }
+        
+        .timer-preset[data-minutes="45"]:hover:not(.inactive) {
+            background: #8256d0;
+        }
+        
+        .timer-preset[data-minutes="60"] {
+            background: #8957e5;
+        }
+        
+        .timer-preset[data-minutes="60"]:hover:not(.inactive) {
+            background: #a475f9;
+        }
+        
+        .custom-timer-btn {
+            padding: 10px 12px;
+            font-size: 12px;
+            background: #d29922;
+        }
+        
+        .custom-timer-btn:hover:not(.inactive):not(.active) {
+            background: #e0a823;
+        }
+        
+        .timer-preset.custom-timer-btn.active {
+            background: #d29922 !important;
+            color: #ffffff !important;
+        }
+        
+        .custom-timer-btn input {
+            width: 100%;
+            padding: 4px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: inherit;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            outline: none;
+        }
+        
+        .custom-timer-btn input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .custom-timer-btn.active input {
+            display: none;
+        }
+        
+        .custom-timer-btn.inactive {
+            background: #21262d !important;
+            color: #6e7681;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .custom-timer-btn.inactive input {
+            cursor: not-allowed;
+        }
+        
+        /* Task Picker Section */
+        .task-display {
+            flex: 1;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 3px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #c9d1d9;
+            min-height: 120px;
+        }
+        
+        .task-display.empty {
+            color: #8b949e;
+            font-style: italic;
+        }
+        
+        .task-controls {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+        }
+        
+        .task-input-group {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .task-input-group input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid #30363d;
+            border-radius: 3px;
+            font-size: 13px;
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .task-input-group input:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        
+        .task-input-group button {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .task-list {
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            background: #0d1117;
+            border-radius: 3px;
+            border: 1px solid #30363d;
+            font-size: 12px;
+        }
+        
+        .task-item span {
+            flex: 1;
+            margin-right: 8px;
+        }
+        
+        .task-item button {
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+        
+        /* Quick Links Section */
+        .links-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .link-input-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            flex-direction: column;
+        }
+        
+        .link-input-group input {
+            padding: 8px 10px;
+            border: 1px solid #30363d;
+            border-radius: 3px;
+            font-size: 13px;
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .link-input-group input:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        
+        .link-input-row {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .link-input-row input {
+            flex: 1;
+        }
+        
+        .link-input-row button {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .link-item {
+            padding: 10px 12px;
+            background: #238636;
+            border-radius: 3px;
+            border: none;
+            transition: background 0.2s;
+            text-align: center;
+            font-size: 12px;
+            white-space: nowrap;
+            aspect-ratio: 1.2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            text-decoration: none;
+        }
+        
+        .link-item:hover {
+            background: #2ea043;
+            text-decoration: none;
+        }
+        
+        /* Buttons */
+        button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 3px;
+            background: #238636;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        button:hover {
+            background: #2ea043;
+        }
+        
+        button.secondary {
+            background: #21262d;
+            border: 1px solid #30363d;
+        }
+        
+        button.secondary:hover {
+            background: #30363d;
+        }
+        
+        button.danger {
+            background: #da3633;
+        }
+        
+        button.danger:hover {
+            background: #f85149;
+        }
+        
+        button.success {
+            background: #238636;
+        }
+        
+        button.success:hover {
+            background: #2ea043;
+        }
+        
+        /* CodeMirror customization */
+        .CodeMirror {
+            height: 100% !important;
+            font-size: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            background: #0d1117;
+        }
+        
+        .CodeMirror-gutters {
+            background: #0d1117;
+            border-right: 1px solid #30363d;
+        }
+        
+        .CodeMirror-linenumber {
+            color: #8b949e;
+            padding: 0 8px 0 5px;
+        }
+        
+        #editor-container {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 2.5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #161b22;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #30363d;
+    width: 80%;
+    max-width: 500px;
+    color: #c9d1d9;
+    border-radius: 3px;
+}
+
+.close {
+    color: #8b949e;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #c9d1d9;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.links-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+    </style>
+</head>
+<body>
+    <div class="header">Control Panel</div>
+    <div class="layout">
+        <!-- Top Left: Timer, Tasks, Links -->
+        <div class="top-left">
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <h2>Timer</h2>
+                <div class="timer-presets">
+                    <button class="timer-preset" data-minutes="5" onclick="handleTimerClick(5)">
+                        <span class="timer-label">5 min</span>
+                        <span class="timer-display"></span>
+                        <span class="timer-reset">reset</span>
+                    </button>
+                    <button class="timer-preset" data-minutes="15" onclick="handleTimerClick(15)">
+                        <span class="timer-label">15 min</span>
+                        <span class="timer-display"></span>
+                        <span class="timer-reset">reset</span>
+                    </button>
+                    <button class="timer-preset" data-minutes="30" onclick="handleTimerClick(30)">
+                        <span class="timer-label">30 min</span>
+                        <span class="timer-display"></span>
+                        <span class="timer-reset">reset</span>
+                    </button>
+                    <button class="timer-preset" data-minutes="45" onclick="handleTimerClick(45)">
+                        <span class="timer-label">45 min</span>
+                        <span class="timer-display"></span>
+                        <span class="timer-reset">reset</span>
+                    </button>
+                    <button class="timer-preset" data-minutes="60" onclick="handleTimerClick(60)">
+                        <span class="timer-label">60 min</span>
+                        <span class="timer-display"></span>
+                        <span class="timer-reset">reset</span>
+                    </button>
+                    <button class="timer-preset custom-timer-btn" onclick="handleCustomTimerClick()">
+                        <input type="number" id="customMinutes" placeholder="min" min="1" max="999" onclick="event.stopPropagation()">
+                        <span class="timer-display"></span>
+                        <span class="timer-reset">reset</span>
+                    </button>
+                </div>
+                <div class="activity-matrix" id="activityMatrix"></div>
+            </div>
+            
+            <!-- Task Picker Section -->
+            <div class="task-section">
+                <div class="section-header">
+                    <h2>Quick Tasks</h2>
+                    <a href="#" class="config-link" onclick="showTaskConfig(); return false;">Config</a>
+                </div>
+                <div class="task-display" id="taskDisplay">
+                    <span class="empty">Click "Pick Task"</span>
+                </div>
+                <button class="success" onclick="pickRandomTask()">Pick Task</button>
+            </div>
+
+            <!-- Task Config Modal -->
+            <div id="taskConfigModal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" onclick="hideTaskConfig()">&times;</span>
+                    <h2>Configure Tasks</h2>
+                    <div class="task-controls">
+                        <div class="task-input-group">
+                            <input type="text" id="taskInput" placeholder="Add task...">
+                            <button onclick="addTask()">Add</button>
+                        </div>
+                        <div class="task-list" id="taskList"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Links Section -->
+            <div class="links-section">
+                <div class="section-header">
+                    <h2>Quick Links</h2>
+                    <a href="#" class="config-link" onclick="showLinkConfig(); return false;">Config</a>
+                </div>
+                <div class="links-container" id="linksContainer">
+                    <!-- Links will be shown here -->
+                </div>
+            </div>
+
+            <!-- Link Config Modal -->
+            <div id="linkConfigModal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" onclick="hideLinkConfig()">&times;</span>
+                    <h2>Configure Links</h2>
+                    <div class="link-input-group">
+                        <input type="text" id="linkName" placeholder="Name">
+                        <div class="link-input-row">
+                            <input type="url" id="linkUrl" placeholder="https://example.com">
+                            <button onclick="addLink()">Add</button>
+                        </div>
+                    </div>
+                    <div class="links-list" id="linksList"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notes Section -->
+        <div class="notes-section">
+            <div id="editor-container"></div>
+        </div>
+        
+        <!-- Trello Board Section -->
+        <div class="trello-section">
+            <iframe src="https://trello.com/b/8ZNahQ9V.html"></iframe>
+        </div>
+        
+        <!-- Projects Section -->
+        <div class="projects-section">
+            <div class="section-header">
+                <h2>Projects</h2>
+                <a href="#" class="config-link" onclick="showProjectConfig(); return false;">Config</a>
+            </div>
+            <div class="links-container" id="projectsContainer">
+                <!-- Projects will be shown here -->
+            </div>
+        </div>
+
+        <!-- Projects Config Modal -->
+        <div id="projectConfigModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="hideProjectConfig()">&times;</span>
+                <h2>Configure Projects</h2>
+                <div class="link-input-group">
+                    <input type="text" id="projectName" placeholder="Name">
+                    <div class="link-input-row">
+                        <input type="url" id="projectUrl" placeholder="https://example.com">
+                        <button onclick="addProject()">Add</button>
+                    </div>
+                </div>
+                <div class="links-list" id="projectsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script>
+        // Initialize CodeMirror editor
+        const editor = CodeMirror(document.getElementById('editor-container'), {
+            value: localStorage.getItem('notes') || '',
+            mode: 'text/plain',
+            theme: 'dracula',
+            lineNumbers: true,
+            lineWrapping: true,
+            autofocus: false,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false
+        });
+        
+        // Auto-save notes on change
+        editor.on('change', function() {
+            localStorage.setItem('notes', editor.getValue());
+        });
+        
+        // Task Picker functionality
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [
+            'Spend 5 minutes unsubscribing from newsletters',
+            'Clean up desktop folder',
+            'Answer WhatsApp messages',
+            'Delete old screenshots',
+            'Review and archive old emails'
+        ];
+        
+        function saveTasksToStorage() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+        
+        function pickRandomTask() {
+            if (tasks.length === 0) {
+                document.getElementById('taskDisplay').innerHTML = '<span class="empty">No tasks available. Add some first!</span>';
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * tasks.length);
+            const selectedTask = tasks[randomIndex];
+            document.getElementById('taskDisplay').innerHTML = `<span>${selectedTask}</span>`;
+        }
+        
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+            
+            if (taskText) {
+                tasks.push(taskText);
+                saveTasksToStorage();
+                taskInput.value = '';
+                renderTasksInModal();
+            }
+        }
+        
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            saveTasksToStorage();
+            renderTasksInModal();
+        }
+        
+        // Quick Links functionality
+        let links = JSON.parse(localStorage.getItem('links')) || [];
+        
+        function renderLinks() {
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = '';
+            
+            links.forEach((link, index) => {
+                const linkEl = document.createElement('a');
+                linkEl.className = 'link-item';
+                linkEl.href = link.url;
+                linkEl.target = '_blank';
+                linkEl.textContent = link.name;
+                container.appendChild(linkEl);
+            });
+        }
+        
+        function addLink() {
+            const name = document.getElementById('linkName').value.trim();
+            const url = document.getElementById('linkUrl').value.trim();
+            
+            if (name && url) {
+                links.push({ name, url });
+                localStorage.setItem('links', JSON.stringify(links));
+                document.getElementById('linkName').value = '';
+                document.getElementById('linkUrl').value = '';
+                renderLinks();
+                renderLinksInModal();
+            }
+        }
+        
+        function deleteLink(index) {
+            links.splice(index, 1);
+            localStorage.setItem('links', JSON.stringify(links));
+            renderLinks();
+            renderLinksInModal();
+        }
+        
+        // Initialize links
+        renderLinks();
+        
+        // Projects functionality
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+        
+        function renderProjects() {
+            const container = document.getElementById('projectsContainer');
+            container.innerHTML = '';
+            
+            projects.forEach((project, index) => {
+                const projectEl = document.createElement('a');
+                projectEl.className = 'link-item';
+                projectEl.href = project.url;
+                projectEl.target = '_blank';
+                projectEl.textContent = project.name;
+                container.appendChild(projectEl);
+            });
+        }
+        
+        function addProject() {
+            const name = document.getElementById('projectName').value.trim();
+            const url = document.getElementById('projectUrl').value.trim();
+            
+            if (name && url) {
+                projects.push({ name, url });
+                localStorage.setItem('projects', JSON.stringify(projects));
+                document.getElementById('projectName').value = '';
+                document.getElementById('projectUrl').value = '';
+                renderProjects();
+                renderProjectsInModal();
+            }
+        }
+        
+        function deleteProject(index) {
+            projects.splice(index, 1);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            renderProjects();
+            renderProjectsInModal();
+        }
+        
+        // Initialize projects
+        renderProjects();
+        
+        // Timer functionality
+        let timerInterval;
+        let timeRemaining = 0;
+        let initialTime = 0;
+        let isRunning = false;
+        let isPaused = false;
+        let activeTimerButton = null;
+        
+        // Activity tracking
+        const MAX_ACTIVITY_CELLS = 24;
+        
+        function loadActivityLog() {
+            const stored = localStorage.getItem('timerActivityLog');
+            return stored ? JSON.parse(stored) : [];
+        }
+        
+        function saveActivityLog(log) {
+            localStorage.setItem('timerActivityLog', JSON.stringify(log));
+        }
+        
+        function addTimerActivity(minutes) {
+            const activityLog = loadActivityLog();
+            
+            // Determine class based on minutes
+            let timerClass;
+            if (minutes === 5) timerClass = 'timer-5';
+            else if (minutes === 15) timerClass = 'timer-15';
+            else if (minutes === 30) timerClass = 'timer-30';
+            else if (minutes === 45) timerClass = 'timer-45';
+            else if (minutes === 60) timerClass = 'timer-60';
+            else timerClass = 'timer-custom';
+            
+            activityLog.push({
+                minutes: minutes,
+                class: timerClass,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only the last MAX_ACTIVITY_CELLS entries
+            if (activityLog.length > MAX_ACTIVITY_CELLS) {
+                activityLog.shift();
+            }
+            
+            saveActivityLog(activityLog);
+            renderActivityMatrix();
+        }
+        
+        function renderActivityMatrix() {
+            const container = document.getElementById('activityMatrix');
+            container.innerHTML = '';
+            
+            const activityLog = loadActivityLog();
+            
+            // Create all 24 cells
+            for (let i = 0; i < MAX_ACTIVITY_CELLS; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'activity-cell level-0';
+                
+                // If we have activity for this position
+                if (activityLog[i]) {
+                    cell.classList.remove('level-0');
+                    cell.classList.add(activityLog[i].class);
+                    cell.title = `${activityLog[i].minutes} minute timer`;
+                } else {
+                    cell.title = 'No timer';
+                }
+                
+                container.appendChild(cell);
+            }
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        function updateTimerButtons() {
+            const buttons = document.querySelectorAll('.timer-preset');
+            buttons.forEach(btn => {
+                if (btn === activeTimerButton) {
+                    btn.classList.remove('inactive');
+                    if (isPaused) {
+                        btn.classList.add('paused');
+                    } else {
+                        btn.classList.remove('paused');
+                    }
+                } else if (isRunning || isPaused) {
+                    btn.classList.add('inactive');
+                    btn.classList.remove('active', 'paused');
+                } else {
+                    btn.classList.remove('inactive', 'active', 'paused');
+                }
+            });
+            
+            // Update display on active button
+            if (activeTimerButton) {
+                const displaySpan = activeTimerButton.querySelector('.timer-display');
+                if (displaySpan) {
+                    displaySpan.textContent = formatTime(timeRemaining);
+                }
+            }
+        }
+        
+        function handleTimerClick(minutes) {
+            const clickedButton = event.currentTarget;
+            
+            // If clicking the active button
+            if (activeTimerButton === clickedButton) {
+                if (isRunning) {
+                    // Pause the timer
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    isPaused = true;
+                    updateTimerButtons();
+                } else if (isPaused) {
+                    // Reset the timer
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    isPaused = false;
+                    activeTimerButton.classList.remove('active', 'paused');
+                    activeTimerButton = null;
+                    timeRemaining = 0;
+                    initialTime = 0;
+                    updateTimerButtons();
+                }
+                return;
+            }
+            
+            // If another timer is running, ignore
+            if (isRunning || isPaused) {
+                return;
+            }
+            
+            // Start new timer
+            activeTimerButton = clickedButton;
+            timeRemaining = minutes * 60;
+            initialTime = minutes * 60;
+            window.currentTimerMinutes = minutes;
+            isRunning = true;
+            isPaused = false;
+            
+            activeTimerButton.classList.add('active');
+            updateTimerButtons();
+            
+            timerInterval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    updateTimerButtons();
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    isPaused = false;
+                    activeTimerButton.classList.remove('active');
+                    activeTimerButton = null;
+                    
+                    // Add timer to activity log when it completes
+                    if (window.currentTimerMinutes) {
+                        addTimerActivity(window.currentTimerMinutes);
+                    }
+                    
+                    updateTimerButtons();
+                    
+                    if (Notification.permission === "granted") {
+                        new Notification("Timer Complete", { body: "Time is up!" });
+                    } else {
+                        alert('Time is up!');
+                    }
+                }
+            }, 1000);
+        }
+        
+        function handleCustomTimerClick() {
+            const clickedButton = event.currentTarget;
+            const customInput = document.getElementById('customMinutes');
+            
+            // If clicking the active button
+            if (activeTimerButton === clickedButton) {
+                if (isRunning) {
+                    // Pause the timer
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    isPaused = true;
+                    updateTimerButtons();
+                } else if (isPaused) {
+                    // Reset the timer (clear everything)
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    isPaused = false;
+                    activeTimerButton.classList.remove('active', 'paused');
+                    activeTimerButton = null;
+                    timeRemaining = 0;
+                    initialTime = 0;
+                    customInput.value = '';
+                    updateTimerButtons();
+                }
+                return;
+            }
+            
+            // If another timer is running, ignore
+            if (isRunning || isPaused) {
+                return;
+            }
+            
+            // Check if input has a value
+            const minutes = parseInt(customInput.value);
+            if (!minutes || minutes <= 0) {
+                // If no value, focus the input so user can type
+                // But don't do anything else
+                return;
+            }
+            
+            // Start new timer with the input value
+            activeTimerButton = clickedButton;
+            timeRemaining = minutes * 60;
+            initialTime = minutes * 60;
+            window.currentTimerMinutes = minutes;
+            isRunning = true;
+            isPaused = false;
+            
+            activeTimerButton.classList.add('active');
+            updateTimerButtons();
+            
+            timerInterval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    updateTimerButtons();
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    isPaused = false;
+                    activeTimerButton.classList.remove('active');
+                    activeTimerButton = null;
+                    customInput.value = '';
+                    
+                    // Add timer to activity log when it completes
+                    if (window.currentTimerMinutes) {
+                        addTimerActivity(window.currentTimerMinutes);
+                    }
+                    
+                    updateTimerButtons();
+                    
+                    if (Notification.permission === "granted") {
+                        new Notification("Timer Complete", { body: "Time is up!" });
+                    } else {
+                        alert('Time is up!');
+                    }
+                }
+            }, 1000);
+        }
+        
+        // Initialize activity matrix
+        renderActivityMatrix();
+        
+        // Allow Enter key for inputs
+        document.getElementById('linkUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addLink();
+            }
+        });
+        
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+        
+        document.getElementById('customMinutes').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleCustomTimerClick();
+            }
+        });
+        
+        // Request notification permission for timer
+        if (Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+
+function showTaskConfig() {
+    renderTasksInModal();
+    document.getElementById('taskConfigModal').style.display = 'block';
+}
+
+function hideTaskConfig() {
+    document.getElementById('taskConfigModal').style.display = 'none';
+}
+
+function showLinkConfig() {
+    renderLinksInModal();
+    document.getElementById('linkConfigModal').style.display = 'block';
+}
+
+function hideLinkConfig() {
+    document.getElementById('linkConfigModal').style.display = 'none';
+}
+
+function renderTasksInModal() {
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+    
+    tasks.forEach((task, index) => {
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'task-item';
+        taskDiv.innerHTML = `
+            <span>${task}</span>
+            <button class="danger" onclick="deleteTask(${index})">Delete</button>
+        `;
+        taskList.appendChild(taskDiv);
+    });
+}
+
+function renderLinksInModal() {
+    const linksList = document.getElementById('linksList');
+    linksList.innerHTML = '';
+    
+    links.forEach((link, index) => {
+        const linkDiv = document.createElement('div');
+        linkDiv.className = 'link-item';
+        linkDiv.innerHTML = `
+            <a href="${link.url}" target="_blank">${link.name}</a>
+            <button class="danger" onclick="deleteLink(${index})">Delete</button>
+        `;
+        linksList.appendChild(linkDiv);
+    });
+}
+
+function showProjectConfig() {
+    renderProjectsInModal();
+    document.getElementById('projectConfigModal').style.display = 'block';
+}
+
+function hideProjectConfig() {
+    document.getElementById('projectConfigModal').style.display = 'none';
+}
+
+function renderProjectsInModal() {
+    const projectsList = document.getElementById('projectsList');
+    projectsList.innerHTML = '';
+    
+    projects.forEach((project, index) => {
+        const projectDiv = document.createElement('div');
+        projectDiv.className = 'link-item';
+        projectDiv.innerHTML = `
+            <a href="${project.url}" target="_blank">${project.name}</a>
+            <button class="danger" onclick="deleteProject(${index})">Delete</button>
+        `;
+        projectsList.appendChild(projectDiv);
+    });
+}
+
+// Close the modal when clicking anywhere outside of it
+window.onclick = function(event) {
+    if (event.target == document.getElementById('taskConfigModal')) {
+        hideTaskConfig();
+    }
+    if (event.target == document.getElementById('linkConfigModal')) {
+        hideLinkConfig();
+    }
+    if (event.target == document.getElementById('projectConfigModal')) {
+        hideProjectConfig();
+    }
+}
+    </script>
+</body>
+</html>
