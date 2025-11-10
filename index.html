@@ -6,7 +6,7 @@
     <title>Personal Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCh3ZtP3o2J1Xx1+0XbKCSjFF6vT2Dd8buwZ7l6UksdQRVvoxMfooAo7+X5dktJ8a57P3rN9C6i9SA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -285,6 +285,7 @@
         
         .config-link i {
             font-size: 1rem;
+            display: inline-block;
         }
         
         .config-link:hover {
@@ -320,8 +321,11 @@
         }
         
         .mute-toggle i {
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
         }
         
         .mute-toggle:hover {
@@ -898,6 +902,11 @@
         
         .icon-button i {
             pointer-events: none;
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
         }
         
         /* CodeMirror customization */
