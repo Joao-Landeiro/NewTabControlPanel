@@ -55,10 +55,11 @@
         .layout {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
             height: calc(100vh - 56px);
             gap: 0;
             flex: 1;
+            min-height: 0;
         }
         
         .top-left {
@@ -66,18 +67,20 @@
             grid-row: 1;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: auto auto 1fr;
+            grid-template-rows: minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, 1fr);
             gap: 0;
+            min-height: 0;
         }
         
         .timer-section {
             grid-column: 1;
             grid-row: 1;
             background: var(--color3);
-            padding: 1rem;
+            padding: 0.5rem 1rem;
             border-right: 1px solid var(--color2);
             border-bottom: 1px solid var(--color2);
             transition: box-shadow 0.3s;
+            position: relative;
         }
         
         .timer-section.highlighted {
@@ -98,32 +101,160 @@
             grid-column: 1;
             grid-row: 2;
             background: var(--color3);
-            padding: 1rem;
+            padding: 0.5rem 1rem;
             border-right: 1px solid var(--color2);
             border-bottom: 1px solid var(--color2);
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+        
+        .timezone-section {
+            grid-column: 1;
+            grid-row: 3;
+            background: var(--color3);
+            padding: 0.5rem 1rem;
+            border-right: 1px solid var(--color2);
+            border-bottom: 1px solid var(--color2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .timezone-list {
+            width: 100%;
+        }
+        
+        .timezone-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .timezone-table td {
+            padding: 0.25rem 0;
+            color: var(--color4);
+            vertical-align: top;
+        }
+        
+        .timezone-table td:first-child {
+            padding-right: 0.75rem;
+            color: var(--color4);
+        }
+        
+        .timezone-table td:last-child {
+            color: var(--color4);
+        }
+        
+        .timezone-pin {
+            cursor: pointer;
+            color: var(--color2);
+            font-size: 0.75rem;
+            padding-left: 0.5rem;
+            transition: color 0.2s;
+        }
+        
+        .timezone-pin:hover {
+            color: var(--color5);
+        }
+        
+        .timezone-pin.pinned {
+            color: var(--color6);
+        }
+        
+        .timezone-pin i {
+            font-size: 0.75rem;
+        }
+        
+        .timezone-table tr:has(.timezone-pin.pinned) td {
+            color: var(--color6);
+        }
+        
+        .timezone-table tr:has(.timezone-pin.pinned) .timezone-offset {
+            color: var(--color6);
+        }
+        
+        .timezone-separator {
+            animation: timezonePulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes timezonePulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        .timezone-offset {
+            color: var(--color9);
+            margin-left: 0.25rem;
+        }
+        
+        .timezone-empty {
+            color: var(--color2);
+            font-style: italic;
+            padding: 0.5rem 0;
         }
         
         .links-section {
             grid-column: 2;
-            grid-row: 1 / 4;
+            grid-row: 1 / 5;
             background: var(--color3);
-            padding: 1rem;
             border-right: 1px solid var(--color2);
             border-bottom: 1px solid var(--color2);
-            overflow-y: auto;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .links-section .section-header {
+            padding: 0.5rem 1rem;
+        }
+        
+        .links-section .links-container {
+            padding: 0 1rem 0.5rem 1rem;
         }
         
         .emotion-section {
             grid-column: 3;
-            grid-row: 1 / 4;
+            grid-row: 1 / 3;
             background: var(--color3);
-            padding: 1rem;
+            padding: 0.5rem 1rem;
             border-bottom: 1px solid var(--color2);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+        
+        .tactics-section {
+            grid-column: 3;
+            grid-row: 3 / 5;
+            background: var(--color3);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--color2);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .tactics-display {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--color4);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.625rem;
+            line-height: 1.5;
         }
         
         .emotion-buttons {
@@ -215,6 +346,14 @@
         .primary-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            background: var(--color2);
+            border-color: var(--color2);
+            color: var(--color4);
+        }
+        
+        .primary-btn:hover:not(:disabled) {
+            background: var(--color7);
+            border-color: var(--color7);
         }
         
         .trello-section {
@@ -223,12 +362,25 @@
             background: var(--color3);
             border-right: 1px solid var(--color2);
             overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
         .trello-section iframe {
             width: 100%;
-            height: 100%;
+            flex: 1;
             border: none;
+            min-height: 0;
+            display: block;
+        }
+        
+        .trello-eye-container {
+            flex-shrink: 0;
+            padding: 0.5rem 1rem;
+            padding-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
         }
         
         .notes-section {
@@ -241,15 +393,36 @@
             border-bottom: 1px solid var(--color2);
             overflow: hidden;
             max-height: 100%;
+            position: relative;
+        }
+        
+        .trello-section {
+            grid-column: 1;
+            grid-row: 2;
+            background: var(--color3);
+            border-right: 1px solid var(--color2);
+            overflow: hidden;
+            position: relative;
         }
         
         .projects-section {
             grid-column: 2;
             grid-row: 2;
             background: var(--color3);
-            padding: 1rem;
             border-right: 1px solid var(--color2);
-            overflow-y: auto;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .projects-section .section-header {
+            padding: 0.5rem 1rem;
+        }
+        
+        .projects-section .links-container {
+            padding: 0 1rem 0.5rem 1rem;
         }
         
         h2 {
@@ -264,38 +437,107 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.625rem;
+            flex-shrink: 0;
         }
         
         .section-header h2 {
             margin-bottom: 0;
         }
         
+        .icon-container {
+            width: 1rem;
+            height: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .panel-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .icon-container i {
+            font-size: 0.75rem;
+            color: var(--color2);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .icon-container i:hover {
+            color: var(--color5);
+        }
+        
+        .eye-icon {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .panel-blur-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 10;
+            display: none;
+            pointer-events: none;
+        }
+        
+        .panel-section.blurred .panel-blur-overlay {
+            display: block;
+        }
+        
+        .panel-section.blurred {
+            filter: blur(4px);
+        }
+        
+        .panel-section.blurred .panel-blur-overlay {
+            filter: none;
+        }
+        
         .config-link {
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
-            color: var(--color9);
+            color: var(--color2);
             font-size: 1rem;
             text-decoration: none;
             transition: color 0.2s;
         }
         
+        .config-link .icon-container {
+            width: 1rem;
+            height: 1rem;
+        }
+        
         .config-link i {
             font-size: 0.75rem;
             display: inline-block;
+            color: var(--color2);
         }
         
         .config-link:hover {
-            color: var(--color9);
+            color: var(--color2);
             opacity: 0.8;
         }
         
         /* Timer Section */
         .timer-header {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.625rem;
+        }
+        
+        .timer-header-left {
+            display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 0.625rem;
         }
         
         .timer-header h2 {
@@ -303,18 +545,18 @@
         }
         
         .mute-toggle {
-            margin-left: auto;
             background: transparent;
             border: none;
-            font-size: 1.25rem;
             cursor: pointer;
-            padding: 0.25rem;
+            padding: 0;
             line-height: 1;
             transition: opacity 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: var(--color5);
+            color: var(--color2);
+            width: 1rem;
+            height: 1rem;
         }
         
         .mute-toggle i {
@@ -328,7 +570,7 @@
         
         .mute-toggle:hover {
             background: transparent;
-            color: var(--color5);
+            color: var(--color2);
         }
         
         .mute-toggle.muted {
@@ -439,7 +681,20 @@
         }
         
         .timer-preset:hover:not(.inactive) {
+            background-color: var(--timer-accent, var(--color5)) !important;
+            color: var(--color1) !important;
+            border-color: var(--timer-accent, var(--color5));
             box-shadow: 0 0 0 1px var(--timer-accent, var(--color5));
+        }
+        
+        .timer-preset:hover:not(.inactive) .timer-duration,
+        .timer-preset:hover:not(.inactive) .timer-unit {
+            color: var(--color1) !important;
+            opacity: 1;
+        }
+        
+        .timer-preset.custom-timer-btn:hover:not(.inactive) .timer-duration {
+            color: var(--color1) !important;
         }
         
         .timer-preset.active .timer-label {
@@ -600,6 +855,11 @@
             background: transparent;
         }
         
+        .task-display .empty {
+            color: var(--color2);
+            font-style: italic;
+        }
+        
         .task-display.empty {
             color: var(--color2);
             font-style: italic;
@@ -679,31 +939,57 @@
         
         .task-duration-btn {
             padding: 0.375rem 0.5rem;
-            background: var(--color1);
-            border: 1px solid var(--color2);
+            background: transparent;
+            border: 0.09375rem solid var(--timer-accent, var(--color5));
             border-radius: 0.1875rem;
-            color: var(--color4);
+            color: var(--timer-accent, var(--color5));
             font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
             transition: background 0.2s, border-color 0.2s;
             height: 2rem;
+            font-weight: 600;
         }
         
-        .task-duration-btn:hover {
+        .task-duration-btn[data-duration="5"] {
+            --timer-accent: var(--color5);
+        }
+        
+        .task-duration-btn[data-duration="15"] {
+            --timer-accent: var(--color6);
+        }
+        
+        .task-duration-btn[data-duration="30"] {
+            --timer-accent: var(--color7);
+        }
+        
+        .task-duration-btn[data-duration="45"] {
+            --timer-accent: var(--color8);
+        }
+        
+        .task-duration-btn[data-duration="60"] {
+            --timer-accent: var(--color9);
+        }
+        
+        .task-duration-btn.custom {
+            --timer-accent: var(--color10);
+        }
+        
+        .task-duration-btn:hover:not(.selected) {
             background: var(--color3);
-            border-color: var(--color5);
+            opacity: 0.8;
         }
         
         .task-duration-btn.selected {
-            background: var(--color6);
-            border-color: var(--color6);
-            color: var(--color4);
+            background: var(--timer-accent, var(--color5));
+            border-color: var(--timer-accent, var(--color5));
+            color: var(--color1);
         }
         
         .task-duration-btn.custom.selected {
-            background: var(--color7);
-            border-color: var(--color7);
+            background: var(--color10);
+            border-color: var(--color10);
+            color: var(--color1);
         }
         
         .task-input-group {
@@ -765,9 +1051,54 @@
         /* Quick Links Section */
         .links-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
             gap: 0.375rem;
+            grid-auto-rows: auto;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+        }
+        
+        .timezone-config-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        
+        .timezone-config-item {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0.75rem;
+        }
+        
+        .timezone-config-item select {
+            padding: 0.5rem 0.625rem;
+            border: 1px solid var(--color2);
+            border-radius: 0.1875rem;
+            font-size: 0.8125rem;
+            background: var(--color1);
+            color: var(--color4);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .timezone-config-item select:focus {
+            outline: none;
+            border-color: var(--color5);
+        }
+        
+        .timezone-config-item input {
+            padding: 0.5rem 0.625rem;
+            border: 1px solid var(--color2);
+            border-radius: 0.1875rem;
+            font-size: 0.8125rem;
+            background: var(--color1);
+            color: var(--color4);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .timezone-config-item input:focus {
+            outline: none;
+            border-color: var(--color5);
         }
         
         .link-input-group {
@@ -1085,10 +1416,18 @@
         <!-- Top Left: Timer, Tasks, Links -->
         <div class="top-left">
             <!-- Timer Section -->
-            <div class="timer-section">
+            <div class="timer-section panel-section">
+                <div class="panel-blur-overlay"></div>
                 <div class="timer-header">
+                    <div class="timer-header-left">
+                        <div class="panel-toggle">
+                            <div class="icon-container">
+                                <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('timer-section')" aria-label="Toggle blur"></i>
+                            </div>
                 <h2>Timer</h2>
-                    <div class="activity-bars" id="activityBars"></div>
+                </div>
+                        <div class="activity-bars" id="activityBars"></div>
+                    </div>
                     <button id="muteToggle" class="mute-toggle" onclick="toggleMute()" title="Mute timer" aria-label="Mute timer">
                         <i class="fa-solid fa-bell" aria-hidden="true"></i>
                     </button>
@@ -1146,19 +1485,48 @@
             </div>
             
             <!-- Task Picker Section -->
-            <div class="task-section">
+            <div class="task-section panel-section">
+                <div class="panel-blur-overlay"></div>
                 <div class="section-header">
+                <div class="panel-toggle">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('task-section')" aria-label="Toggle blur"></i>
+                    </div>
                 <h2>Quick Tasks</h2>
+                </div>
                     <a href="#" class="config-link" onclick="showTaskConfig(); return false;" aria-label="Configure tasks">
-                        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                        <div class="icon-container">
+                            <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                        </div>
                     </a>
                 </div>
                 <div class="task-display" id="taskDisplay">
                     <span class="empty">Click to pick a task</span>
                     <span class="task-spinner"></span>
                 </div>
-                <div class="task-actions" id="taskActions" style="display: none;">
-                    <button class="primary-btn" onclick="acceptTask()">Accept</button>
+                <div class="task-actions" id="taskActions">
+                    <button class="primary-btn" id="acceptTaskBtn" onclick="acceptTask()" disabled>Accept</button>
+                </div>
+            </div>
+
+            <!-- Timezone Section -->
+            <div class="timezone-section panel-section">
+                <div class="panel-blur-overlay"></div>
+                <div class="section-header">
+                    <div class="panel-toggle">
+                        <div class="icon-container">
+                            <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('timezone-section')" aria-label="Toggle blur"></i>
+                        </div>
+                        <h2>Time zones</h2>
+                    </div>
+                    <a href="#" class="config-link" onclick="showTimezoneConfig(); return false;" aria-label="Configure timezones">
+                        <div class="icon-container">
+                            <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                        </div>
+                    </a>
+                </div>
+                <div class="timezone-list" id="timezoneList">
+                    <!-- Timezone table will be rendered here -->
                 </div>
             </div>
 
@@ -1188,7 +1556,7 @@
                             <input type="text" id="taskTags" placeholder="Tags (comma-separated, e.g., urgent,work)">
                         </div>
                         <div class="task-input-group">
-                        <button onclick="addTask()">Add</button>
+                        <button class="primary-btn" onclick="addTask()">Add</button>
                     </div>
                     <div class="task-list" id="taskList"></div>
                     </div>
@@ -1196,11 +1564,19 @@
             </div>
             
             <!-- Quick Links Section -->
-            <div class="links-section">
+            <div class="links-section panel-section">
+                <div class="panel-blur-overlay"></div>
                 <div class="section-header">
+                <div class="panel-toggle">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('links-section')" aria-label="Toggle blur"></i>
+                    </div>
                 <h2>Quick Links</h2>
+                </div>
                     <a href="#" class="config-link" onclick="showLinkConfig(); return false;" aria-label="Configure quick links">
-                        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                        <div class="icon-container">
+                            <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                        </div>
                     </a>
                 </div>
                 <div class="links-container" id="linksContainer">
@@ -1209,9 +1585,15 @@
             </div>
             
             <!-- Emotional Tracker Section -->
-            <div class="emotion-section">
+            <div class="emotion-section panel-section">
+                <div class="panel-blur-overlay"></div>
                 <div class="section-header">
-                    <h2>Emotional Tracker</h2>
+                    <div class="panel-toggle">
+                        <div class="icon-container">
+                            <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('emotion-section')" aria-label="Toggle blur"></i>
+                        </div>
+                        <h2>Emotional Tracker</h2>
+                    </div>
                 </div>
                 <div class="emotion-buttons">
                     <button class="emotion-btn" data-emotion="contempt" onclick="toggleEmotion('contempt')">Contempt</button>
@@ -1228,7 +1610,28 @@
                     placeholder="Explain your emotions (max 120 characters)"
                     maxlength="120"
                 ></textarea>
-                <button class="primary-btn" onclick="logEmotion()">Log</button>
+                <button class="primary-btn" id="logEmotionBtn" onclick="logEmotion()" disabled>Log</button>
+            </div>
+
+            <!-- Tactics Section -->
+            <div class="tactics-section panel-section">
+                <div class="panel-blur-overlay"></div>
+                <div class="section-header">
+                    <div class="panel-toggle">
+                        <div class="icon-container">
+                            <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('tactics-section')" aria-label="Toggle blur"></i>
+                        </div>
+                        <h2>Tactics</h2>
+                    </div>
+                    <a href="#" class="config-link" onclick="showTacticsConfig(); return false;" aria-label="Configure tactics">
+                        <div class="icon-container">
+                            <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                        </div>
+                    </a>
+                </div>
+                <div class="tactics-display" id="tacticsDisplay">
+                    <!-- Tactic will be displayed here -->
+                </div>
             </div>
 
             <!-- Link Config Modal -->
@@ -1250,21 +1653,47 @@
         </div>
         
         <!-- Notes Section -->
-        <div class="notes-section">
+        <div class="notes-section panel-section">
+            <div class="panel-blur-overlay"></div>
+            <div class="section-header" style="padding: 1rem; padding-bottom: 0.5rem;">
+                <div class="panel-toggle">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('notes-section')" aria-label="Toggle blur"></i>
+                    </div>
+                    <h2>Notes</h2>
+                </div>
+                <div class="icon-container">
+                    <i class="fa-solid fa-copy" onclick="copyNotes()" aria-label="Copy notes"></i>
+                </div>
+            </div>
             <div id="editor-container"></div>
         </div>
         
         <!-- Trello Board Section -->
-        <div class="trello-section">
+        <div class="trello-section panel-section">
+            <div class="panel-blur-overlay"></div>
+            <div class="trello-eye-container">
+                <div class="icon-container">
+                    <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('trello-section')" aria-label="Toggle blur"></i>
+                </div>
+            </div>
             <iframe src="https://trello.com/b/8ZNahQ9V.html"></iframe>
         </div>
         
         <!-- Projects Section -->
-        <div class="projects-section">
+        <div class="projects-section panel-section">
+            <div class="panel-blur-overlay"></div>
             <div class="section-header">
-                <h2>Projects</h2>
+                <div class="panel-toggle">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('projects-section')" aria-label="Toggle blur"></i>
+                    </div>
+                    <h2>Projects</h2>
+                </div>
                 <a href="#" class="config-link" onclick="showProjectConfig(); return false;" aria-label="Configure projects">
-                    <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                    <div class="icon-container">
+                        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                    </div>
                 </a>
             </div>
             <div class="links-container" id="projectsContainer">
@@ -1285,6 +1714,50 @@
                     </div>
                 </div>
                 <div class="links-list" id="projectsList"></div>
+            </div>
+        </div>
+
+        <!-- Timezone Config Modal -->
+        <div id="timezoneConfigModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="hideTimezoneConfig()">&times;</span>
+                <h2>Configure Time zones</h2>
+                <div class="timezone-config-group">
+                    <div class="timezone-config-item">
+                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 1:</label>
+                        <input type="text" id="timezone1Label" placeholder="Label" style="margin-bottom: 0.375rem;">
+                        <select id="timezone1Tz" style="margin-bottom: 0.75rem;"></select>
+                    </div>
+                    <div class="timezone-config-item">
+                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 2:</label>
+                        <input type="text" id="timezone2Label" placeholder="Label" style="margin-bottom: 0.375rem;">
+                        <select id="timezone2Tz" style="margin-bottom: 0.75rem;"></select>
+                    </div>
+                    <div class="timezone-config-item">
+                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 3:</label>
+                        <input type="text" id="timezone3Label" placeholder="Label" style="margin-bottom: 0.375rem;">
+                        <select id="timezone3Tz" style="margin-bottom: 0.75rem;"></select>
+                    </div>
+                    <div class="timezone-config-item">
+                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 4:</label>
+                        <input type="text" id="timezone4Label" placeholder="Label" style="margin-bottom: 0.375rem;">
+                        <select id="timezone4Tz" style="margin-bottom: 0.75rem;"></select>
+                    </div>
+                    <button class="primary-btn" onclick="saveTimezoneConfig()">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tactics Config Modal -->
+        <div id="tacticsConfigModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="hideTacticsConfig()">&times;</span>
+                <h2>Configure Tactics</h2>
+                <div class="link-input-group">
+                    <input type="text" id="tacticInput" placeholder="Enter a tactic...">
+                    <button class="primary-btn" onclick="addTactic()">Add</button>
+                </div>
+                <div class="links-list" id="tacticsList"></div>
             </div>
         </div>
     </div>
@@ -1308,6 +1781,65 @@
         editor.on('change', function() {
             localStorage.setItem('notes', editor.getValue());
         });
+        
+        // Copy notes function - copies plain text (zero formatting)
+        function copyNotes() {
+            try {
+                const text = editor.getValue();
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        // Visual feedback - briefly change icon
+                        const copyIcon = document.querySelector('.notes-section .fa-copy');
+                        if (copyIcon) {
+                            const originalClass = copyIcon.className;
+                            copyIcon.className = 'fa-solid fa-check';
+                            setTimeout(() => {
+                                copyIcon.className = originalClass;
+                            }, 1000);
+                        }
+                    }).catch(err => {
+                        console.error('Failed to copy:', err);
+                        // Fallback to older method
+                        fallbackCopyTextToClipboard(text);
+                    });
+                } else {
+                    // Fallback for older browsers
+                    fallbackCopyTextToClipboard(text);
+                }
+            } catch (error) {
+                console.error('Error copying notes:', error);
+            }
+        }
+        
+        // Fallback copy method for older browsers
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                // Visual feedback
+                const copyIcon = document.querySelector('.notes-section .fa-copy');
+                if (copyIcon) {
+                    const originalClass = copyIcon.className;
+                    copyIcon.className = 'fa-solid fa-check';
+                    setTimeout(() => {
+                        copyIcon.className = originalClass;
+                    }, 1000);
+                }
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+            }
+            document.body.removeChild(textArea);
+        }
+        
+        // Make copyNotes globally accessible
+        window.copyNotes = copyNotes;
         
         // Task Picker functionality
         // Clear old data and start fresh (only once)
@@ -1429,7 +1961,8 @@
                 const display = document.getElementById('taskDisplay');
                 display.innerHTML = '<span class="empty">No tasks available. Add some first!</span><span class="task-spinner"></span>';
                 display.classList.remove('has-task', 'loading');
-                document.getElementById('taskActions').style.display = 'none';
+                const acceptBtn = document.getElementById('acceptTaskBtn');
+                if (acceptBtn) acceptBtn.disabled = true;
                 return;
             }
             
@@ -1455,7 +1988,8 @@
                     display.classList.remove('loading');
                     display.innerHTML = `<span style="color:${currentTaskColor};">${selectedTask.name}</span><span class="task-spinner"></span>`;
                     display.classList.add('has-task');
-                    document.getElementById('taskActions').style.display = 'flex';
+                    const acceptBtn = document.getElementById('acceptTaskBtn');
+                    if (acceptBtn) acceptBtn.disabled = false;
                     
                     // Add Enter key handler to accept task
                     function handleTaskAcceptKeyPressTransition(e) {
@@ -1478,7 +2012,8 @@
                 
                 display.innerHTML = `<span style="color:${currentTaskColor};">${selectedTask.name}</span><span class="task-spinner"></span>`;
                 display.classList.add('has-task');
-                document.getElementById('taskActions').style.display = 'flex';
+                const acceptBtn = document.getElementById('acceptTaskBtn');
+                if (acceptBtn) acceptBtn.disabled = false;
                 
                 // Add Enter key handler to accept task
                 function handleTaskAcceptKeyPress(e) {
@@ -1544,7 +2079,8 @@
             `;
             display.classList.add('has-task');
             display.classList.remove('loading');
-            document.getElementById('taskActions').style.display = 'none';
+            const acceptBtn = document.getElementById('acceptTaskBtn');
+            if (acceptBtn) acceptBtn.disabled = true;
             
             // Add Enter key handler to start the highlighted timer
             function handleTaskTimerKeyPress(e) {
@@ -1609,6 +2145,10 @@
             display.classList.remove('has-task', 'loading');
             currentTask = null;
             currentTaskColor = null;
+            
+            // Disable the accept button
+            const acceptBtn = document.getElementById('acceptTaskBtn');
+            if (acceptBtn) acceptBtn.disabled = true;
         }
         
         function taskCancelled() {
@@ -1649,6 +2189,10 @@
             display.classList.remove('has-task', 'loading');
             currentTask = null;
             currentTaskColor = null;
+            
+            // Disable the accept button
+            const acceptBtn = document.getElementById('acceptTaskBtn');
+            if (acceptBtn) acceptBtn.disabled = true;
         }
         
         function addTask() {
@@ -1704,8 +2248,8 @@
             const container = document.getElementById('linksContainer');
             container.innerHTML = '';
             
-            // Always render 9 buttons (3x3 grid)
-            for (let i = 0; i < 9; i++) {
+            // Always render 16 buttons (4x4 grid)
+            for (let i = 0; i < 16; i++) {
                 const linkEl = document.createElement('a');
                 
                 if (i < links.length && links[i].url) {
@@ -1777,14 +2321,29 @@
             const container = document.getElementById('projectsContainer');
             container.innerHTML = '';
             
-            projects.forEach((project, index) => {
+            // Always render 16 buttons (4x4 grid)
+            for (let i = 0; i < 16; i++) {
                 const projectEl = document.createElement('a');
-                projectEl.className = 'link-item';
-                projectEl.href = project.url;
-                projectEl.target = '_blank';
-                projectEl.textContent = project.name;
+                
+                if (i < projects.length && projects[i].url) {
+                    // Project exists - render it normally
+                    projectEl.className = 'link-item';
+                    projectEl.href = projects[i].url;
+                    projectEl.target = '_blank';
+                    projectEl.textContent = projects[i].name;
+                } else {
+                    // Empty slot - render with gray styling
+                    projectEl.className = 'link-item empty';
+                    projectEl.href = '#';
+                    projectEl.textContent = 'Empty';
+                    projectEl.onclick = function(e) {
+                        e.preventDefault();
+                        return false;
+                    };
+                }
+                
                 container.appendChild(projectEl);
-            });
+            }
         }
         
         function addProject() {
@@ -2425,6 +2984,12 @@
                         btn.classList.remove('disabled');
                     }
                 });
+                
+                // Update Log button disabled state
+                const logBtn = document.getElementById('logEmotionBtn');
+                if (logBtn) {
+                    logBtn.disabled = selectedEmotions.length === 0;
+                }
             } catch (error) {
                 console.error('Error in updateEmotionButtons:', error);
             }
@@ -2464,6 +3029,7 @@
                 document.querySelectorAll('.emotion-btn').forEach(btn => {
                     btn.classList.remove('selected', 'disabled');
                 });
+                updateEmotionButtons(); // Update Log button state
                 
                 // Show confirmation (optional)
                 const logBtn = document.querySelector('.emotion-section .primary-btn');
@@ -2579,6 +3145,538 @@ function renderProjectsInModal() {
     });
 }
 
+// Timezone functionality
+let timezones = JSON.parse(localStorage.getItem('timezones')) || [];
+let pinnedTimezoneIndex = parseInt(localStorage.getItem('pinnedTimezoneIndex')) || null;
+let timezoneUpdateInterval = null;
+let timezonePulseInterval = null;
+
+// Common timezone abbreviations mapped to IANA timezones
+const commonTimezones = [
+    { label: 'EST/EDT (Eastern)', value: 'America/New_York' },
+    { label: 'CST/CDT (Central)', value: 'America/Chicago' },
+    { label: 'MST/MDT (Mountain)', value: 'America/Denver' },
+    { label: 'PST/PDT (Pacific)', value: 'America/Los_Angeles' },
+    { label: 'AKST/AKDT (Alaska)', value: 'America/Anchorage' },
+    { label: 'HST (Hawaii)', value: 'America/Honolulu' },
+    { label: 'GMT (Greenwich)', value: 'Europe/London' },
+    { label: 'CET/CEST (Central Europe)', value: 'Europe/Paris' },
+    { label: 'EET/EEST (Eastern Europe)', value: 'Europe/Athens' },
+    { label: 'IST (India)', value: 'Asia/Kolkata' },
+    { label: 'JST (Japan)', value: 'Asia/Tokyo' },
+    { label: 'CST (China)', value: 'Asia/Shanghai' },
+    { label: 'AEDT/AEST (Australia East)', value: 'Australia/Sydney' },
+    { label: 'NZST/NZDT (New Zealand)', value: 'Pacific/Auckland' }
+];
+
+// IANA timezone list
+const ianaTimezones = [
+    'UTC',
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Los_Angeles',
+    'America/Phoenix',
+    'America/Anchorage',
+    'America/Honolulu',
+    'America/Toronto',
+    'America/Vancouver',
+    'America/Mexico_City',
+    'America/Sao_Paulo',
+    'America/Buenos_Aires',
+    'Europe/London',
+    'Europe/Paris',
+    'Europe/Berlin',
+    'Europe/Rome',
+    'Europe/Madrid',
+    'Europe/Amsterdam',
+    'Europe/Stockholm',
+    'Europe/Vienna',
+    'Europe/Zurich',
+    'Europe/Athens',
+    'Europe/Moscow',
+    'Asia/Dubai',
+    'Asia/Karachi',
+    'Asia/Kolkata',
+    'Asia/Bangkok',
+    'Asia/Singapore',
+    'Asia/Hong_Kong',
+    'Asia/Shanghai',
+    'Asia/Tokyo',
+    'Asia/Seoul',
+    'Asia/Jakarta',
+    'Asia/Manila',
+    'Australia/Sydney',
+    'Australia/Melbourne',
+    'Australia/Brisbane',
+    'Australia/Perth',
+    'Pacific/Auckland',
+    'Pacific/Honolulu',
+    'Africa/Cairo',
+    'Africa/Johannesburg',
+    'Africa/Lagos'
+];
+
+function populateTimezoneDropdowns() {
+    for (let i = 1; i <= 4; i++) {
+        const select = document.getElementById(`timezone${i}Tz`);
+        if (!select) continue;
+        
+        select.innerHTML = '<option value="">Select timezone...</option>';
+        
+        // Add common timezone abbreviations first
+        if (commonTimezones.length > 0) {
+            const commonGroup = document.createElement('optgroup');
+            commonGroup.label = 'Common Timezones';
+            commonTimezones.forEach(tz => {
+                const option = document.createElement('option');
+                option.value = tz.value;
+                option.textContent = tz.label;
+                commonGroup.appendChild(option);
+            });
+            select.appendChild(commonGroup);
+        }
+        
+        // Add separator option
+        const separator = document.createElement('option');
+        separator.disabled = true;
+        separator.textContent = '──────────';
+        select.appendChild(separator);
+        
+        // Add IANA timezones
+        ianaTimezones.forEach(tz => {
+            const option = document.createElement('option');
+            option.value = tz;
+            option.textContent = tz;
+            select.appendChild(option);
+        });
+    }
+}
+
+function renderTimezones() {
+    const timezoneList = document.getElementById('timezoneList');
+    timezoneList.innerHTML = '';
+    
+    if (timezones.length === 0) {
+        timezoneList.innerHTML = '<div class="timezone-empty">No timezones configured. Click the gear icon to configure.</div>';
+        return;
+    }
+    
+    // Create a copy of timezones with their original indices for reordering
+    let timezonesWithIndex = timezones.map((tz, idx) => ({ ...tz, originalIndex: idx }));
+    
+    // If a timezone is pinned, reorder based on time relative to pinned timezone
+    if (pinnedTimezoneIndex !== null && pinnedTimezoneIndex < timezones.length) {
+        const pinnedTz = timezones[pinnedTimezoneIndex];
+        const now = new Date();
+        
+        // Get the current time in the pinned timezone
+        const pinnedFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: pinnedTz.timezone,
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: false
+        });
+        
+        const pinnedParts = pinnedFormatter.formatToParts(now);
+        let pinnedHour = 0, pinnedMin = 0;
+        pinnedParts.forEach(p => {
+            if (p.type === 'hour') pinnedHour = parseInt(p.value);
+            if (p.type === 'minute') pinnedMin = parseInt(p.value);
+        });
+        const pinnedTimeMinutes = pinnedHour * 60 + pinnedMin;
+        
+        // Calculate time for each timezone and sort
+        timezonesWithIndex.sort((a, b) => {
+            const aFormatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: a.timezone,
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: false
+            });
+            const bFormatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: b.timezone,
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: false
+            });
+            
+            const aParts = aFormatter.formatToParts(now);
+            const bParts = bFormatter.formatToParts(now);
+            let aHour = 0, aMin = 0, bHour = 0, bMin = 0;
+            
+            aParts.forEach(p => {
+                if (p.type === 'hour') aHour = parseInt(p.value);
+                if (p.type === 'minute') aMin = parseInt(p.value);
+            });
+            bParts.forEach(p => {
+                if (p.type === 'hour') bHour = parseInt(p.value);
+                if (p.type === 'minute') bMin = parseInt(p.value);
+            });
+            
+            const aTimeMinutes = aHour * 60 + aMin;
+            const bTimeMinutes = bHour * 60 + bMin;
+            
+            // Calculate offset from pinned time (handling day wrap-around)
+            let aOffset = aTimeMinutes - pinnedTimeMinutes;
+            let bOffset = bTimeMinutes - pinnedTimeMinutes;
+            
+            // Normalize offsets to -12 to +12 hours range
+            if (aOffset > 720) aOffset -= 1440;
+            if (aOffset < -720) aOffset += 1440;
+            if (bOffset > 720) bOffset -= 1440;
+            if (bOffset < -720) bOffset += 1440;
+            
+            return aOffset - bOffset;
+        });
+    }
+    
+    const table = document.createElement('table');
+    table.className = 'timezone-table';
+    
+    timezonesWithIndex.forEach((tz, displayIndex) => {
+        if (!tz.label || !tz.timezone) return;
+        
+        const row = document.createElement('tr');
+        row.id = `timezone-row-${tz.originalIndex}`;
+        
+        const labelCell = document.createElement('td');
+        labelCell.textContent = tz.label.trimEnd();
+        
+        const timeCell = document.createElement('td');
+        timeCell.id = `timezone-time-${tz.originalIndex}`;
+        timeCell.innerHTML = '';
+        
+        const pinCell = document.createElement('td');
+        pinCell.className = 'timezone-pin-cell';
+        const pinIcon = document.createElement('span');
+        pinIcon.className = 'timezone-pin';
+        if (tz.originalIndex === pinnedTimezoneIndex) {
+            pinIcon.classList.add('pinned');
+        }
+        pinIcon.innerHTML = '<i class="fa-solid fa-thumbtack"></i>';
+        pinIcon.onclick = (e) => {
+            e.stopPropagation();
+            togglePinTimezone(tz.originalIndex);
+        };
+        pinCell.appendChild(pinIcon);
+        
+        row.appendChild(labelCell);
+        row.appendChild(timeCell);
+        row.appendChild(pinCell);
+        table.appendChild(row);
+    });
+    
+    timezoneList.appendChild(table);
+    
+    updateTimezoneTimes();
+}
+
+function togglePinTimezone(index) {
+    if (pinnedTimezoneIndex === index) {
+        // Unpin if clicking the same pin
+        pinnedTimezoneIndex = null;
+    } else {
+        pinnedTimezoneIndex = index;
+    }
+    localStorage.setItem('pinnedTimezoneIndex', pinnedTimezoneIndex !== null ? pinnedTimezoneIndex.toString() : '');
+    renderTimezones();
+}
+
+function updateTimezoneTimes() {
+    timezones.forEach((tz, index) => {
+        if (!tz.label || !tz.timezone) return;
+        
+        try {
+            const now = new Date();
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: tz.timezone,
+                weekday: 'short',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            
+            const parts = formatter.formatToParts(now);
+            let day = '';
+            let hour = '';
+            let minute = '';
+            
+            parts.forEach(part => {
+                if (part.type === 'weekday') day = part.value;
+                if (part.type === 'hour') hour = part.value;
+                if (part.type === 'minute') minute = part.value;
+            });
+            
+            const timeElement = document.getElementById(`timezone-time-${index}`);
+            if (timeElement) {
+                const timeStr = `${day} ${hour}<span class="timezone-separator">:</span>${minute}`;
+                
+                // Calculate offset relative to pinned timezone or user's current timezone
+                let referenceTz = null;
+                if (pinnedTimezoneIndex !== null && pinnedTimezoneIndex < timezones.length) {
+                    referenceTz = timezones[pinnedTimezoneIndex];
+                }
+                
+                let offsetHours = 0;
+                if (referenceTz) {
+                    // Calculate offset relative to pinned timezone
+                    const refFormatter = new Intl.DateTimeFormat('en-US', {
+                        timeZone: referenceTz.timezone,
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false
+                    });
+                    
+                    const tzFormatter = new Intl.DateTimeFormat('en-US', {
+                        timeZone: tz.timezone,
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false
+                    });
+                    
+                    const refParts = refFormatter.formatToParts(now);
+                    const tzParts = tzFormatter.formatToParts(now);
+                    let refHour = 0, refMin = 0, tzHour = 0, tzMin = 0;
+                    
+                    refParts.forEach(p => {
+                        if (p.type === 'hour') refHour = parseInt(p.value);
+                        if (p.type === 'minute') refMin = parseInt(p.value);
+                    });
+                    tzParts.forEach(p => {
+                        if (p.type === 'hour') tzHour = parseInt(p.value);
+                        if (p.type === 'minute') tzMin = parseInt(p.value);
+                    });
+                    
+                    let offsetMinutes = (tzHour * 60 + tzMin) - (refHour * 60 + refMin);
+                    offsetHours = Math.round(offsetMinutes / 60);
+                    
+                    // Normalize to -12 to +12 hours range
+                    if (offsetHours > 12) offsetHours -= 24;
+                    if (offsetHours < -12) offsetHours += 24;
+                } else {
+                    // Calculate offset relative to user's current timezone (original behavior)
+                    const userTzFormatter = new Intl.DateTimeFormat('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false
+                    });
+                    
+                    const userParts = userTzFormatter.formatToParts(now);
+                    let userHour = 0, userMin = 0;
+                    userParts.forEach(p => {
+                        if (p.type === 'hour') userHour = parseInt(p.value);
+                        if (p.type === 'minute') userMin = parseInt(p.value);
+                    });
+                    
+                    const tzFormatter = new Intl.DateTimeFormat('en-US', {
+                        timeZone: tz.timezone,
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: false
+                    });
+                    
+                    const tzParts = tzFormatter.formatToParts(now);
+                    let tzHour = 0, tzMin = 0;
+                    tzParts.forEach(p => {
+                        if (p.type === 'hour') tzHour = parseInt(p.value);
+                        if (p.type === 'minute') tzMin = parseInt(p.value);
+                    });
+                    
+                    let offsetMinutes = (tzHour * 60 + tzMin) - (userHour * 60 + userMin);
+                    offsetHours = Math.round(offsetMinutes / 60);
+                    
+                    // Normalize to -12 to +12 hours range
+                    if (offsetHours > 12) offsetHours -= 24;
+                    if (offsetHours < -12) offsetHours += 24;
+                }
+                
+                const sign = offsetHours >= 0 ? '+' : '';
+                const offsetStr = `<span class="timezone-offset">${sign}${offsetHours} hours</span>`;
+                timeElement.innerHTML = `${timeStr} ${offsetStr}`;
+            }
+        } catch (error) {
+            console.error(`Error updating timezone ${tz.timezone}:`, error);
+            const timeElementError = document.getElementById(`timezone-time-${index}`);
+            if (timeElementError) {
+                timeElementError.textContent = 'Invalid timezone';
+                timeElementError.style.color = 'var(--color10)';
+            }
+        }
+    });
+}
+
+function showTimezoneConfig() {
+    // Populate dropdowns if not already populated
+    populateTimezoneDropdowns();
+    
+    // Load current timezones into form (remove trailing space from label for editing)
+    for (let i = 1; i <= 4; i++) {
+        const tz = timezones[i - 1] || { label: '', timezone: '' };
+        const labelValue = tz.label ? tz.label.trimEnd() : '';
+        document.getElementById(`timezone${i}Label`).value = labelValue;
+        const select = document.getElementById(`timezone${i}Tz`);
+        if (select) {
+            select.value = tz.timezone || '';
+        }
+    }
+    document.getElementById('timezoneConfigModal').style.display = 'block';
+}
+
+function hideTimezoneConfig() {
+    document.getElementById('timezoneConfigModal').style.display = 'none';
+}
+
+function saveTimezoneConfig() {
+    const newTimezones = [];
+    
+    for (let i = 1; i <= 4; i++) {
+        const label = document.getElementById(`timezone${i}Label`).value.trim();
+        const select = document.getElementById(`timezone${i}Tz`);
+        const timezone = select ? select.value.trim() : '';
+        
+        if (label && timezone) {
+            newTimezones.push({ label: label + ' ', timezone });
+        }
+    }
+    
+    timezones = newTimezones;
+    localStorage.setItem('timezones', JSON.stringify(timezones));
+    
+    // Validate pinned index - reset if out of bounds
+    if (pinnedTimezoneIndex !== null && pinnedTimezoneIndex >= timezones.length) {
+        pinnedTimezoneIndex = null;
+        localStorage.setItem('pinnedTimezoneIndex', '');
+    }
+    
+    renderTimezones();
+    hideTimezoneConfig();
+}
+
+// Initialize timezone display
+renderTimezones();
+
+// Set up update intervals
+if (timezoneUpdateInterval) clearInterval(timezoneUpdateInterval);
+timezoneUpdateInterval = setInterval(updateTimezoneTimes, 60000); // Update every minute
+
+// Tactics functionality
+let tactics = JSON.parse(localStorage.getItem('tactics')) || [];
+let tacticsCheckInterval = null;
+let lastTacticsMinute = null;
+
+function renderTactics() {
+    const tacticsDisplay = document.getElementById('tacticsDisplay');
+    if (!tacticsDisplay) return;
+    
+    if (tactics.length === 0) {
+        tacticsDisplay.innerHTML = '<span style="color: var(--color2); font-style: italic;">No tactics configured. Click the gear icon to configure.</span>';
+        return;
+    }
+    
+    pickRandomTactic();
+}
+
+function pickRandomTactic() {
+    const tacticsDisplay = document.getElementById('tacticsDisplay');
+    if (!tacticsDisplay || tactics.length === 0) return;
+    
+    const randomIndex = Math.floor(Math.random() * tactics.length);
+    const selectedTactic = tactics[randomIndex];
+    tacticsDisplay.textContent = selectedTactic;
+}
+
+function checkAndUpdateTactics() {
+    const now = new Date();
+    const currentMinute = now.getMinutes();
+    
+    // Check if we're at :00 or :30
+    if (currentMinute === 0 || currentMinute === 30) {
+        // Only update if we haven't updated for this minute yet
+        if (lastTacticsMinute !== currentMinute) {
+            lastTacticsMinute = currentMinute;
+            pickRandomTactic();
+        }
+    } else {
+        // Reset the last minute tracker when not at :00 or :30
+        lastTacticsMinute = null;
+    }
+}
+
+function showTacticsConfig() {
+    renderTacticsInModal();
+    document.getElementById('tacticsConfigModal').style.display = 'block';
+}
+
+function hideTacticsConfig() {
+    document.getElementById('tacticsConfigModal').style.display = 'none';
+}
+
+function renderTacticsInModal() {
+    const tacticsList = document.getElementById('tacticsList');
+    if (!tacticsList) return;
+    tacticsList.innerHTML = '';
+    
+    tactics.forEach((tactic, index) => {
+        const tacticDiv = document.createElement('div');
+        tacticDiv.className = 'link-item';
+        tacticDiv.innerHTML = `
+            <span style="flex: 1; color: var(--color4); font-size: 0.875rem;">${tactic}</span>
+            <button class="danger icon-button" onclick="deleteTactic(${index})" aria-label="Delete tactic">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        `;
+        tacticsList.appendChild(tacticDiv);
+    });
+}
+
+function addTactic() {
+    const tacticInput = document.getElementById('tacticInput');
+    const tacticText = tacticInput.value.trim();
+    
+    if (tacticText) {
+        tactics.push(tacticText);
+        localStorage.setItem('tactics', JSON.stringify(tactics));
+        tacticInput.value = '';
+        renderTacticsInModal();
+        renderTactics();
+    }
+}
+
+function deleteTactic(index) {
+    tactics.splice(index, 1);
+    localStorage.setItem('tactics', JSON.stringify(tactics));
+    renderTacticsInModal();
+    renderTactics();
+}
+
+// Initialize tactics display
+renderTactics();
+
+// Set up interval to check for :00 and :30
+if (tacticsCheckInterval) clearInterval(tacticsCheckInterval);
+tacticsCheckInterval = setInterval(checkAndUpdateTactics, 1000); // Check every second
+
+// Add Enter key support for tactics input
+document.addEventListener('DOMContentLoaded', function() {
+    const tacticInput = document.getElementById('tacticInput');
+    if (tacticInput) {
+        tacticInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTactic();
+            }
+        });
+    }
+});
+
+// Panel blur toggle functionality
+function togglePanelBlur(panelClass) {
+    const panel = document.querySelector(`.${panelClass}`);
+    if (panel) {
+        panel.classList.toggle('blurred');
+    }
+}
+
 // Close the modal when clicking anywhere outside of it
 window.onclick = function(event) {
     if (event.target == document.getElementById('taskConfigModal')) {
@@ -2589,6 +3687,12 @@ window.onclick = function(event) {
     }
     if (event.target == document.getElementById('projectConfigModal')) {
         hideProjectConfig();
+    }
+    if (event.target == document.getElementById('timezoneConfigModal')) {
+        hideTimezoneConfig();
+    }
+    if (event.target == document.getElementById('tacticsConfigModal')) {
+        hideTacticsConfig();
     }
         }
     </script>
