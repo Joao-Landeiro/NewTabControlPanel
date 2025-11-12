@@ -15,6 +15,7 @@
             --color1: #1e1e2e; /* Background - dark muted blue */
             --color2: #6c7086; /* Comment - medium desaturated blue */
             --color3: #313244; /* Selection - dark muted blue */
+            --color0: #181825; /* Darker background - darker gray/purple */
             --color4: #cdd6f4; /* Foreground - off-white/light cream */
             --color5: #89b4fa; /* Cyan - bright light blue */
             --color6: #a6e3a1; /* Green - vibrant bright lime green */
@@ -33,7 +34,7 @@
         
         body {
             font-family: 'JetBrains Mono', monospace;
-            background: var(--color1);
+            background: var(--color0);
             color: var(--color4);
             height: 100vh;
             overflow: hidden;
@@ -42,11 +43,11 @@
         }
         
         .header {
-            background: var(--color3);
+            background: transparent;
             color: var(--color5);
             padding: 0.625rem 1.25rem;
             border-bottom: 1px solid var(--color2);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 600;
             letter-spacing: 0.03rem;
             flex-shrink: 0;
@@ -75,7 +76,7 @@
         .timer-section {
             grid-column: 1;
             grid-row: 1;
-            background: var(--color3);
+            background: transparent;
             padding: 0.5rem 1rem;
             border-right: 1px solid var(--color2);
             border-bottom: 1px solid var(--color2);
@@ -100,7 +101,7 @@
         .task-section {
             grid-column: 1;
             grid-row: 2;
-            background: var(--color3);
+            background: transparent;
             padding: 0.5rem 1rem;
             border-right: 1px solid var(--color2);
             border-bottom: 1px solid var(--color2);
@@ -111,8 +112,8 @@
         
         .timezone-section {
             grid-column: 1;
-            grid-row: 3;
-            background: var(--color3);
+            grid-row: 3 / -1;
+            background: transparent;
             padding: 0.5rem 1rem;
             border-right: 1px solid var(--color2);
             border-bottom: 1px solid var(--color2);
@@ -193,16 +194,21 @@
             margin-left: 0.25rem;
         }
         
-        .timezone-empty {
+        /* Unified helper text class for consistent styling */
+        .helper-text {
             color: var(--color2);
             font-style: italic;
+            font-size: 0.75rem;
+        }
+        
+        .timezone-empty {
             padding: 0.5rem 0;
         }
         
         .links-section {
             grid-column: 2;
             grid-row: 1 / 5;
-            background: var(--color3);
+            background: transparent;
             border-right: 1px solid var(--color2);
             border-bottom: 1px solid var(--color2);
             overflow: hidden;
@@ -223,7 +229,7 @@
         .emotion-section {
             grid-column: 3;
             grid-row: 1 / 3;
-            background: var(--color3);
+            background: transparent;
             padding: 0.5rem 1rem;
             border-bottom: 1px solid var(--color2);
             overflow-y: auto;
@@ -235,7 +241,7 @@
         .tactics-section {
             grid-column: 3;
             grid-row: 3 / 5;
-            background: var(--color3);
+            background: transparent;
             padding: 0.5rem 1rem;
             border-bottom: 1px solid var(--color2);
             overflow-y: auto;
@@ -359,7 +365,7 @@
         .trello-section {
             grid-column: 1;
             grid-row: 2;
-            background: var(--color3);
+            background: transparent;
             border-right: 1px solid var(--color2);
             overflow: hidden;
             position: relative;
@@ -386,7 +392,7 @@
         .notes-section {
             grid-column: 2;
             grid-row: 1;
-            background: var(--color1);
+            background: transparent;
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--color2);
@@ -399,7 +405,7 @@
         .trello-section {
             grid-column: 1;
             grid-row: 2;
-            background: var(--color3);
+            background: transparent;
             border-right: 1px solid var(--color2);
             overflow: hidden;
             position: relative;
@@ -408,7 +414,7 @@
         .projects-section {
             grid-column: 2;
             grid-row: 2;
-            background: var(--color3);
+            background: transparent;
             border-right: 1px solid var(--color2);
             overflow: hidden;
             position: relative;
@@ -779,6 +785,7 @@
         
         .timer-preset.custom-timer-btn {
             --timer-accent: var(--color10);
+            padding: 0.125rem 0.375rem;
         }
         
         .custom-timer-btn .timer-duration {
@@ -787,7 +794,6 @@
             line-height: 1;
             color: var(--timer-accent, var(--color10));
             outline: none;
-            min-width: 1.5rem;
             text-align: center;
         }
         
@@ -855,15 +861,6 @@
             background: transparent;
         }
         
-        .task-display .empty {
-            color: var(--color2);
-            font-style: italic;
-        }
-        
-        .task-display.empty {
-            color: var(--color2);
-            font-style: italic;
-        }
         
         .task-display.has-task {
             cursor: pointer;
@@ -1150,7 +1147,9 @@
             transition: border-color 0.2s, color 0.2s;
             text-align: center;
             font-size: 12px;
-            white-space: nowrap;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
             aspect-ratio: 1.2;
             display: flex;
             align-items: center;
@@ -1435,8 +1434,7 @@
                 <div class="timer-presets">
                     <button class="timer-preset" data-minutes="5" onclick="handleTimerClick(5, this)">
                         <span class="timer-label">
-                            <span class="timer-duration">5</span>
-                            <span class="timer-unit">minutes</span>
+                            <span class="timer-duration">05</span>
                         </span>
                         <span class="timer-display"></span>
                         <span class="timer-reset">reset</span>
@@ -1444,7 +1442,6 @@
                     <button class="timer-preset" data-minutes="15" onclick="handleTimerClick(15, this)">
                         <span class="timer-label">
                             <span class="timer-duration">15</span>
-                            <span class="timer-unit">minutes</span>
                         </span>
                         <span class="timer-display"></span>
                         <span class="timer-reset">reset</span>
@@ -1452,7 +1449,6 @@
                     <button class="timer-preset" data-minutes="30" onclick="handleTimerClick(30, this)">
                         <span class="timer-label">
                             <span class="timer-duration">30</span>
-                            <span class="timer-unit">minutes</span>
                         </span>
                         <span class="timer-display"></span>
                         <span class="timer-reset">reset</span>
@@ -1460,7 +1456,6 @@
                     <button class="timer-preset" data-minutes="45" onclick="handleTimerClick(45, this)">
                         <span class="timer-label">
                             <span class="timer-duration">45</span>
-                            <span class="timer-unit">minutes</span>
                         </span>
                         <span class="timer-display"></span>
                         <span class="timer-reset">reset</span>
@@ -1468,7 +1463,6 @@
                     <button class="timer-preset" data-minutes="60" onclick="handleTimerClick(60, this)">
                         <span class="timer-label">
                             <span class="timer-duration">60</span>
-                            <span class="timer-unit">minutes</span>
                         </span>
                         <span class="timer-display"></span>
                         <span class="timer-reset">reset</span>
@@ -1476,7 +1470,6 @@
                     <button class="timer-preset custom-timer-btn" onclick="handleCustomTimerClick()">
                         <span class="timer-label">
                             <span class="timer-duration" contenteditable="true" data-placeholder="XX">XX</span>
-                            <span class="timer-unit">minutes</span>
                         </span>
                         <span class="timer-display"></span>
                         <span class="timer-reset">reset</span>
@@ -1501,7 +1494,7 @@
                     </a>
                 </div>
                 <div class="task-display" id="taskDisplay">
-                    <span class="empty">Click to pick a task</span>
+                    <span class="empty helper-text">Click to pick a task</span>
                     <span class="task-spinner"></span>
                 </div>
                 <div class="task-actions" id="taskActions">
@@ -1959,7 +1952,7 @@
         function pickRandomTask() {
             if (tasks.length === 0) {
                 const display = document.getElementById('taskDisplay');
-                display.innerHTML = '<span class="empty">No tasks available. Add some first!</span><span class="task-spinner"></span>';
+                display.innerHTML = '<span class="empty helper-text">No tasks available. Add some first!</span><span class="task-spinner"></span>';
                 display.classList.remove('has-task', 'loading');
                 const acceptBtn = document.getElementById('acceptTaskBtn');
                 if (acceptBtn) acceptBtn.disabled = true;
@@ -2141,7 +2134,7 @@
             
             // Clear the task display
             const display = document.getElementById('taskDisplay');
-            display.innerHTML = '<span class="empty">Click to pick a task</span><span class="task-spinner"></span>';
+            display.innerHTML = '<span class="empty helper-text">Click to pick a task</span><span class="task-spinner"></span>';
             display.classList.remove('has-task', 'loading');
             currentTask = null;
             currentTaskColor = null;
@@ -2185,7 +2178,7 @@
             
             // Clear the task display
             const display = document.getElementById('taskDisplay');
-            display.innerHTML = '<span class="empty">Click to pick a task</span><span class="task-spinner"></span>';
+            display.innerHTML = '<span class="empty helper-text">Click to pick a task</span><span class="task-spinner"></span>';
             display.classList.remove('has-task', 'loading');
             currentTask = null;
             currentTaskColor = null;
@@ -3258,7 +3251,7 @@ function renderTimezones() {
     timezoneList.innerHTML = '';
     
     if (timezones.length === 0) {
-        timezoneList.innerHTML = '<div class="timezone-empty">No timezones configured. Click the gear icon to configure.</div>';
+        timezoneList.innerHTML = '<div class="timezone-empty helper-text">No timezones configured. Click the gear icon to configure.</div>';
         return;
     }
     
@@ -3570,7 +3563,7 @@ function renderTactics() {
     if (!tacticsDisplay) return;
     
     if (tactics.length === 0) {
-        tacticsDisplay.innerHTML = '<span style="color: var(--color2); font-style: italic;">No tactics configured. Click the gear icon to configure.</span>';
+        tacticsDisplay.innerHTML = '<span class="helper-text">No tactics configured. Click the gear icon to configure.</span>';
         return;
     }
     
