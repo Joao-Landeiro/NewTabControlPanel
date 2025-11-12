@@ -1647,7 +1647,8 @@
                     <input type="text" id="linkName" placeholder="Name">
                     <div class="link-input-row">
                         <input type="url" id="linkUrl" placeholder="https://example.com">
-                        <button class="primary-btn" onclick="addLink()">Add</button>
+                        <button class="primary-btn" id="linkAddBtn" onclick="addLink()">Add</button>
+                        <button class="secondary" id="linkCancelBtn" onclick="cancelEditLink()" style="display: none;">Cancel</button>
                     </div>
                 </div>
                     <div class="links-list" id="linksList"></div>
@@ -1713,7 +1714,8 @@
                     <input type="text" id="projectName" placeholder="Name">
                     <div class="link-input-row">
                         <input type="url" id="projectUrl" placeholder="https://example.com">
-                        <button class="primary-btn" onclick="addProject()">Add</button>
+                        <button class="primary-btn" id="projectAddBtn" onclick="addProject()">Add</button>
+                        <button class="secondary" id="projectCancelBtn" onclick="cancelEditProject()" style="display: none;">Cancel</button>
                     </div>
                 </div>
                 <div class="links-list" id="projectsList"></div>
@@ -2275,13 +2277,19 @@
         
         // Quick Links functionality
         let links = JSON.parse(localStorage.getItem('links')) || [];
+        // Limit to 8 links max
+        if (links.length > 8) {
+            links = links.slice(0, 8);
+            localStorage.setItem('links', JSON.stringify(links));
+        }
+        let editingLinkIndex = null;
         
         function renderLinks() {
             const container = document.getElementById('linksContainer');
             container.innerHTML = '';
             
-            // Always render 16 buttons (4x4 grid)
-            for (let i = 0; i < 16; i++) {
+            // Always render 8 buttons (max 8 links)
+            for (let i = 0; i < 8; i++) {
                 const linkEl = document.createElement('a');
                 
                 if (i < links.length && links[i].url) {
@@ -2309,14 +2317,79 @@
             const name = document.getElementById('linkName').value.trim();
             const url = document.getElementById('linkUrl').value.trim();
             
-            if (name && url) {
-                links.push({ name, url });
-                localStorage.setItem('links', JSON.stringify(links));
-                document.getElementById('linkName').value = '';
-                document.getElementById('linkUrl').value = '';
-                renderLinks();
-                renderLinksInModal();
+            if (!name || !url) return;
+            
+            // Check max limit (only when adding, not editing)
+            if (editingLinkIndex === null && links.length >= 8) {
+                alert('Maximum of 8 links allowed');
+                return;
             }
+            
+            if (editingLinkIndex !== null) {
+                // Edit mode
+                links[editingLinkIndex] = { name, url };
+                editingLinkIndex = null;
+            } else {
+                // Add mode
+                links.push({ name, url });
+            }
+            
+            localStorage.setItem('links', JSON.stringify(links));
+            document.getElementById('linkName').value = '';
+            document.getElementById('linkUrl').value = '';
+            updateLinkButtonText();
+            renderLinks();
+            renderLinksInModal();
+        }
+        
+        function editLink(index) {
+            const link = links[index];
+            document.getElementById('linkName').value = link.name;
+            document.getElementById('linkUrl').value = link.url;
+            editingLinkIndex = index;
+            updateLinkButtonText();
+            document.getElementById('linkName').focus();
+        }
+        
+        function cancelEditLink() {
+            editingLinkIndex = null;
+            document.getElementById('linkName').value = '';
+            document.getElementById('linkUrl').value = '';
+            updateLinkButtonText();
+        }
+        
+        function updateLinkButtonText() {
+            const addBtn = document.getElementById('linkAddBtn');
+            const cancelBtn = document.getElementById('linkCancelBtn');
+            if (addBtn) {
+                if (editingLinkIndex !== null) {
+                    addBtn.textContent = 'Save';
+                    if (cancelBtn) cancelBtn.style.display = 'inline-block';
+                } else {
+                    addBtn.textContent = 'Add';
+                    if (cancelBtn) cancelBtn.style.display = 'none';
+                }
+            }
+        }
+        
+        function moveLinkUp(index) {
+            if (index === 0) return;
+            const temp = links[index];
+            links[index] = links[index - 1];
+            links[index - 1] = temp;
+            localStorage.setItem('links', JSON.stringify(links));
+            renderLinks();
+            renderLinksInModal();
+        }
+        
+        function moveLinkDown(index) {
+            if (index === links.length - 1) return;
+            const temp = links[index];
+            links[index] = links[index + 1];
+            links[index + 1] = temp;
+            localStorage.setItem('links', JSON.stringify(links));
+            renderLinks();
+            renderLinksInModal();
         }
         
         function deleteLink(index) {
@@ -2325,6 +2398,14 @@
             renderLinks();
             renderLinksInModal();
         }
+        
+        // Make link functions globally accessible
+        window.addLink = addLink;
+        window.editLink = editLink;
+        window.cancelEditLink = cancelEditLink;
+        window.moveLinkUp = moveLinkUp;
+        window.moveLinkDown = moveLinkDown;
+        window.deleteLink = deleteLink;
         
         // Initialize links
         renderLinks();
@@ -2348,13 +2429,19 @@
         
         // Projects functionality
         let projects = JSON.parse(localStorage.getItem('projects')) || [];
+        // Limit to 8 projects max
+        if (projects.length > 8) {
+            projects = projects.slice(0, 8);
+            localStorage.setItem('projects', JSON.stringify(projects));
+        }
+        let editingProjectIndex = null;
         
         function renderProjects() {
             const container = document.getElementById('projectsContainer');
             container.innerHTML = '';
             
-            // Always render 16 buttons (4x4 grid)
-            for (let i = 0; i < 16; i++) {
+            // Always render 8 buttons (max 8 projects)
+            for (let i = 0; i < 8; i++) {
                 const projectEl = document.createElement('a');
                 
                 if (i < projects.length && projects[i].url) {
@@ -2382,14 +2469,79 @@
             const name = document.getElementById('projectName').value.trim();
             const url = document.getElementById('projectUrl').value.trim();
             
-            if (name && url) {
-                projects.push({ name, url });
-                localStorage.setItem('projects', JSON.stringify(projects));
-                document.getElementById('projectName').value = '';
-                document.getElementById('projectUrl').value = '';
-                renderProjects();
-                renderProjectsInModal();
+            if (!name || !url) return;
+            
+            // Check max limit (only when adding, not editing)
+            if (editingProjectIndex === null && projects.length >= 8) {
+                alert('Maximum of 8 projects allowed');
+                return;
             }
+            
+            if (editingProjectIndex !== null) {
+                // Edit mode
+                projects[editingProjectIndex] = { name, url };
+                editingProjectIndex = null;
+            } else {
+                // Add mode
+                projects.push({ name, url });
+            }
+            
+            localStorage.setItem('projects', JSON.stringify(projects));
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectUrl').value = '';
+            updateProjectButtonText();
+            renderProjects();
+            renderProjectsInModal();
+        }
+        
+        function editProject(index) {
+            const project = projects[index];
+            document.getElementById('projectName').value = project.name;
+            document.getElementById('projectUrl').value = project.url;
+            editingProjectIndex = index;
+            updateProjectButtonText();
+            document.getElementById('projectName').focus();
+        }
+        
+        function cancelEditProject() {
+            editingProjectIndex = null;
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectUrl').value = '';
+            updateProjectButtonText();
+        }
+        
+        function updateProjectButtonText() {
+            const addBtn = document.getElementById('projectAddBtn');
+            const cancelBtn = document.getElementById('projectCancelBtn');
+            if (addBtn) {
+                if (editingProjectIndex !== null) {
+                    addBtn.textContent = 'Save';
+                    if (cancelBtn) cancelBtn.style.display = 'inline-block';
+                } else {
+                    addBtn.textContent = 'Add';
+                    if (cancelBtn) cancelBtn.style.display = 'none';
+                }
+            }
+        }
+        
+        function moveProjectUp(index) {
+            if (index === 0) return;
+            const temp = projects[index];
+            projects[index] = projects[index - 1];
+            projects[index - 1] = temp;
+            localStorage.setItem('projects', JSON.stringify(projects));
+            renderProjects();
+            renderProjectsInModal();
+        }
+        
+        function moveProjectDown(index) {
+            if (index === projects.length - 1) return;
+            const temp = projects[index];
+            projects[index] = projects[index + 1];
+            projects[index + 1] = temp;
+            localStorage.setItem('projects', JSON.stringify(projects));
+            renderProjects();
+            renderProjectsInModal();
         }
         
         function deleteProject(index) {
@@ -2398,6 +2550,14 @@
             renderProjects();
             renderProjectsInModal();
         }
+        
+        // Make project functions globally accessible
+        window.addProject = addProject;
+        window.editProject = editProject;
+        window.cancelEditProject = cancelEditProject;
+        window.moveProjectUp = moveProjectUp;
+        window.moveProjectDown = moveProjectDown;
+        window.deleteProject = deleteProject;
         
         // Initialize projects
         renderProjects();
@@ -3103,11 +3263,21 @@ function hideTaskConfig() {
 }
 
 function showLinkConfig() {
+    // Reset edit state when opening modal
+    editingLinkIndex = null;
+    document.getElementById('linkName').value = '';
+    document.getElementById('linkUrl').value = '';
+    updateLinkButtonText();
     renderLinksInModal();
     document.getElementById('linkConfigModal').style.display = 'block';
 }
 
 function hideLinkConfig() {
+    // Reset edit state when closing modal
+    editingLinkIndex = null;
+    document.getElementById('linkName').value = '';
+    document.getElementById('linkUrl').value = '';
+    updateLinkButtonText();
     document.getElementById('linkConfigModal').style.display = 'none';
 }
 
@@ -3141,22 +3311,48 @@ function renderLinksInModal() {
     links.forEach((link, index) => {
         const linkDiv = document.createElement('div');
         linkDiv.className = 'link-item';
+        linkDiv.style.cursor = 'default';
         linkDiv.innerHTML = `
-            <a href="${link.url}" target="_blank">${link.name}</a>
-            <button class="danger icon-button" onclick="deleteLink(${index})" aria-label="Delete link">
-                <i class="fa-solid fa-trash"></i>
-            </button>
+            <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.125rem;">
+                    <button class="icon-button" onclick="moveLinkUp(${index})" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move up">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
+                    <button class="icon-button" onclick="moveLinkDown(${index})" ${index === links.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move down">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
+                <a href="${link.url}" target="_blank" style="flex: 1; text-decoration: none; color: var(--color5);">${link.name}</a>
+            </div>
+            <div style="display: flex; gap: 0.25rem;">
+                <button class="icon-button" onclick="editLink(${index})" aria-label="Edit link" style="color: var(--color5);">
+                    <i class="fa-solid fa-edit"></i>
+                </button>
+                <button class="danger icon-button" onclick="deleteLink(${index})" aria-label="Delete link">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
         `;
         linksList.appendChild(linkDiv);
     });
 }
 
 function showProjectConfig() {
+    // Reset edit state when opening modal
+    editingProjectIndex = null;
+    document.getElementById('projectName').value = '';
+    document.getElementById('projectUrl').value = '';
+    updateProjectButtonText();
     renderProjectsInModal();
     document.getElementById('projectConfigModal').style.display = 'block';
 }
 
 function hideProjectConfig() {
+    // Reset edit state when closing modal
+    editingProjectIndex = null;
+    document.getElementById('projectName').value = '';
+    document.getElementById('projectUrl').value = '';
+    updateProjectButtonText();
     document.getElementById('projectConfigModal').style.display = 'none';
 }
 
@@ -3167,11 +3363,27 @@ function renderProjectsInModal() {
     projects.forEach((project, index) => {
         const projectDiv = document.createElement('div');
         projectDiv.className = 'link-item';
+        projectDiv.style.cursor = 'default';
         projectDiv.innerHTML = `
-            <a href="${project.url}" target="_blank">${project.name}</a>
-            <button class="danger icon-button" onclick="deleteProject(${index})" aria-label="Delete project">
-                <i class="fa-solid fa-trash"></i>
-            </button>
+            <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.125rem;">
+                    <button class="icon-button" onclick="moveProjectUp(${index})" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move up">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
+                    <button class="icon-button" onclick="moveProjectDown(${index})" ${index === projects.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move down">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
+                <a href="${project.url}" target="_blank" style="flex: 1; text-decoration: none; color: var(--color5);">${project.name}</a>
+            </div>
+            <div style="display: flex; gap: 0.25rem;">
+                <button class="icon-button" onclick="editProject(${index})" aria-label="Edit project" style="color: var(--color5);">
+                    <i class="fa-solid fa-edit"></i>
+                </button>
+                <button class="danger icon-button" onclick="deleteProject(${index})" aria-label="Delete project">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
         `;
         projectsList.appendChild(projectDiv);
     });
