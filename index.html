@@ -51,6 +51,9 @@
             font-weight: 600;
             letter-spacing: 0.03rem;
             flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .layout {
@@ -1410,7 +1413,14 @@
     </style>
 </head>
 <body>
-    <div class="header">Control Panel</div>
+    <div class="header">
+        <span>Control Panel</span>
+        <a href="#" class="config-link" onclick="showDataManagement(); return false;" aria-label="Data management">
+            <div class="icon-container">
+                <i class="fa-solid fa-gear" aria-hidden="true"></i>
+            </div>
+        </a>
+    </div>
     <div class="layout">
         <!-- Top Left: Timer, Tasks, Links -->
         <div class="top-left">
@@ -1751,6 +1761,35 @@
                     <button class="primary-btn" onclick="addTactic()">Add</button>
                 </div>
                 <div class="links-list" id="tacticsList"></div>
+            </div>
+        </div>
+
+        <!-- Data Management Modal -->
+        <div id="dataManagementModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="hideDataManagement()">&times;</span>
+                <h2>Data Management</h2>
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                    <div>
+                        <h3 style="font-size: 0.875rem; color: var(--color4); margin-bottom: 0.5rem;">Export Data</h3>
+                        <p style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.75rem;">
+                            Download all your data as a JSON backup file.
+                        </p>
+                        <button class="primary-btn" onclick="exportLocalStorage()">
+                            <i class="fa-solid fa-download"></i> Export Data
+                        </button>
+                    </div>
+                    <div style="border-top: 1px solid var(--color2); padding-top: 1rem;">
+                        <h3 style="font-size: 0.875rem; color: var(--color4); margin-bottom: 0.5rem;">Import Data</h3>
+                        <p style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.75rem;">
+                            Restore data from a previously exported backup file.
+                        </p>
+                        <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="importLocalStorage(event)">
+                        <button class="primary-btn" onclick="document.getElementById('importFileInput').click()">
+                            <i class="fa-solid fa-upload"></i> Import Data
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -3670,6 +3709,119 @@ function togglePanelBlur(panelClass) {
     }
 }
 
+// Data Management functions
+function showDataManagement() {
+    document.getElementById('dataManagementModal').style.display = 'block';
+}
+
+function hideDataManagement() {
+    document.getElementById('dataManagementModal').style.display = 'none';
+}
+
+function exportLocalStorage() {
+    try {
+        // Collect all localStorage data
+        const allData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            data: {}
+        };
+        
+        // List of all keys we want to export
+        const keysToExport = [
+            'tasks',
+            'taskStats',
+            'emotionLogs',
+            'timerActivityLog',
+            'timerMuted',
+            'links',
+            'projects',
+            'timezones',
+            'pinnedTimezoneIndex',
+            'tactics',
+            'notes'
+        ];
+        
+        // Collect data from localStorage
+        keysToExport.forEach(key => {
+            const value = localStorage.getItem(key);
+            if (value !== null) {
+                try {
+                    // Try to parse JSON, if it fails, store as string
+                    allData.data[key] = JSON.parse(value);
+                } catch (e) {
+                    // If it's not JSON (like 'notes'), store as string
+                    allData.data[key] = value;
+                }
+            }
+        });
+        
+        // Create JSON blob
+        const jsonString = JSON.stringify(allData, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        
+        // Create download link
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        a.href = url;
+        a.download = `control-panel-backup-${timestamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Show success message
+        alert('Data exported successfully!');
+        hideDataManagement();
+    } catch (error) {
+        console.error('Error exporting data:', error);
+        alert('Error exporting data. Please check the console for details.');
+    }
+}
+
+function importLocalStorage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            // Validate structure
+            if (!importedData.data || typeof importedData.data !== 'object') {
+                throw new Error('Invalid backup file format');
+            }
+            
+            // Confirm before overwriting
+            if (!confirm('This will overwrite all current data. Are you sure?')) {
+                return;
+            }
+            
+            // Import each key
+            Object.keys(importedData.data).forEach(key => {
+                const value = importedData.data[key];
+                if (typeof value === 'string') {
+                    localStorage.setItem(key, value);
+                } else {
+                    localStorage.setItem(key, JSON.stringify(value));
+                }
+            });
+            
+            alert('Data imported successfully! Page will reload.');
+            location.reload();
+        } catch (error) {
+            console.error('Error importing data:', error);
+            alert('Error importing data. Please check the file format.');
+        }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input
+    event.target.value = '';
+}
+
 // Close the modal when clicking anywhere outside of it
 window.onclick = function(event) {
     if (event.target == document.getElementById('taskConfigModal')) {
@@ -3686,6 +3838,9 @@ window.onclick = function(event) {
     }
     if (event.target == document.getElementById('tacticsConfigModal')) {
         hideTacticsConfig();
+    }
+    if (event.target == document.getElementById('dataManagementModal')) {
+        hideDataManagement();
     }
         }
     </script>
