@@ -349,7 +349,8 @@
         
         .primary-btn:hover {
             background: var(--color6);
-            opacity: 0.9;
+            border-color: var(--color6);
+            opacity: 0.8;
         }
         
         .primary-btn:disabled {
@@ -358,11 +359,6 @@
             background: var(--color2);
             border-color: var(--color2);
             color: var(--color4);
-        }
-        
-        .primary-btn:hover:not(:disabled) {
-            background: var(--color7);
-            border-color: var(--color7);
         }
         
         .trello-section {
@@ -635,7 +631,7 @@
         }
         
         .timer-preset {
-            padding: 0.125rem 0.375rem;
+            padding: 0.09375rem 0.28125rem;
             font-size: 0.75rem;
             white-space: nowrap;
             height: auto;
@@ -662,7 +658,7 @@
         }
         
         .timer-preset .timer-duration {
-            font-size: 1rem;
+            font-size: 0.75rem;
             font-weight: 600;
             line-height: 1;
         }
@@ -675,7 +671,7 @@
         
         .timer-preset .timer-display {
             display: none;
-            font-size: 1rem;
+            font-size: 0.75rem;
             font-weight: 600;
             font-variant-numeric: tabular-nums;
             line-height: 1;
@@ -788,11 +784,11 @@
         
         .timer-preset.custom-timer-btn {
             --timer-accent: var(--color10);
-            padding: 0.125rem 0.375rem;
+            padding: 0.09375rem 0.28125rem;
         }
         
         .custom-timer-btn .timer-duration {
-            font-size: 1rem;
+            font-size: 0.75rem;
             font-weight: 600;
             line-height: 1;
             color: var(--timer-accent, var(--color10));
@@ -1051,9 +1047,11 @@
         /* Quick Links Section */
         .links-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
-            gap: 0.375rem;
+            grid-template-columns: repeat(4, minmax(0, 5rem));
+            column-gap: 0.375rem;
+            row-gap: 0.25rem;
             grid-auto-rows: auto;
+            align-content: start;
             overflow-y: auto;
             flex: 1;
             min-height: 0;
@@ -1184,64 +1182,58 @@
         /* Buttons */
         button {
             padding: 10px 24px;
-            border: none;
+            border: 1px solid var(--color4);
             border-radius: 3px;
-            background: var(--color6);
+            background: transparent;
             color: var(--color4);
             cursor: pointer;
             font-size: 14px;
-            transition: background 0.2s;
+            transition: opacity 0.2s, border-color 0.2s;
             font-weight: 500;
             font-family: 'JetBrains Mono', monospace;
         }
         
         button:hover {
-            background: var(--color6);
-        }
-        
-        button.secondary {
-            background: var(--color3);
-            border: 1px solid var(--color2);
-        }
-        
-        button.secondary:hover {
-            background: var(--color2);
+            opacity: 0.8;
         }
         
         button.danger {
             background: var(--color10);
+            border-color: var(--color10);
+            color: var(--color1);
         }
         
         button.danger:hover {
             background: var(--color10);
-            opacity: 0.9;
+            border-color: var(--color10);
+            opacity: 0.8;
         }
         
         button.danger.icon-button {
             background: transparent;
+            border-color: var(--color10);
+            color: var(--color10);
         }
         
         button.danger.icon-button:hover {
             background: transparent;
-            opacity: 1;
+            opacity: 0.8;
         }
         
         button.danger.icon-button i {
             color: var(--color10);
         }
         
-        button.danger.icon-button:hover i {
-            color: var(--color10);
-            opacity: 0.8;
-        }
-        
         button.success {
             background: var(--color6);
+            border-color: var(--color6);
+            color: var(--color1);
         }
         
         button.success:hover {
             background: var(--color6);
-            opacity: 0.9;
+            border-color: var(--color6);
+            opacity: 0.8;
         }
         
         .icon-button {
@@ -3325,7 +3317,7 @@ function renderLinksInModal() {
                 <a href="${link.url}" target="_blank" style="flex: 1; text-decoration: none; color: var(--color5);">${link.name}</a>
             </div>
             <div style="display: flex; gap: 0.25rem;">
-                <button class="icon-button" onclick="editLink(${index})" aria-label="Edit link" style="color: var(--color5);">
+                <button class="icon-button" onclick="editLink(${index})" aria-label="Edit link">
                     <i class="fa-solid fa-edit"></i>
                 </button>
                 <button class="danger icon-button" onclick="deleteLink(${index})" aria-label="Delete link">
@@ -3377,7 +3369,7 @@ function renderProjectsInModal() {
                 <a href="${project.url}" target="_blank" style="flex: 1; text-decoration: none; color: var(--color5);">${project.name}</a>
             </div>
             <div style="display: flex; gap: 0.25rem;">
-                <button class="icon-button" onclick="editProject(${index})" aria-label="Edit project" style="color: var(--color5);">
+                <button class="icon-button" onclick="editProject(${index})" aria-label="Edit project">
                     <i class="fa-solid fa-edit"></i>
                 </button>
                 <button class="danger icon-button" onclick="deleteProject(${index})" aria-label="Delete project">
