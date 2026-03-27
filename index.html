@@ -30,26 +30,28 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            border-radius: 0;
         }
         
         body {
             font-family: 'JetBrains Mono', monospace;
             background: var(--color0);
             color: var(--color4);
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow: auto;
             display: flex;
             flex-direction: column;
         }
         
         .header {
-            background: transparent;
+            background: var(--color3);
             color: var(--color5);
             padding: 0.625rem 1.25rem;
-            border-bottom: 1px solid var(--color2);
-            font-size: 1.2rem;
+            border-bottom: 2px solid var(--color2);
+            font-size: 1rem;
             font-weight: 600;
-            letter-spacing: 0.03rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             flex-shrink: 0;
             display: flex;
             justify-content: space-between;
@@ -59,30 +61,30 @@
         .layout {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-            height: calc(100vh - 56px);
+            grid-template-rows: minmax(20rem, 1fr) minmax(20rem, 1fr);
+            min-height: calc(100vh - 3.5rem);
+            min-width: 64rem;
             gap: 0;
             flex: 1;
-            min-height: 0;
+            border: 2px solid var(--color2);
         }
         
         .top-left {
             grid-column: 1;
             grid-row: 1;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, 1fr);
+            grid-template-columns: minmax(11rem, 1fr) minmax(11rem, 1fr) minmax(11rem, 1fr);
+            grid-template-rows: auto auto minmax(0, 1fr);
             gap: 0;
-            min-height: 0;
+            overflow: hidden;
         }
         
         .timer-section {
             grid-column: 1;
             grid-row: 1;
-            background: transparent;
             padding: 0.5rem 1rem;
-            border-right: 1px solid var(--color2);
-            border-bottom: 1px solid var(--color2);
+            border-right: 2px solid var(--color2);
+            border-bottom: 2px solid var(--color2);
             transition: box-shadow 0.3s;
             position: relative;
         }
@@ -97,17 +99,16 @@
                 box-shadow: inset 0 0 0 2px var(--color5);
             }
             50% {
-                box-shadow: inset 0 0 0 2px var(--color5);
+                box-shadow: inset 0 0 8px 2px var(--color5);
             }
         }
         
         .task-section {
             grid-column: 1;
             grid-row: 2;
-            background: transparent;
             padding: 0.5rem 1rem;
-            border-right: 1px solid var(--color2);
-            border-bottom: 1px solid var(--color2);
+            border-right: 2px solid var(--color2);
+            border-bottom: 2px solid var(--color2);
             display: flex;
             flex-direction: column;
             position: relative;
@@ -116,10 +117,9 @@
         .timezone-section {
             grid-column: 1;
             grid-row: 3 / -1;
-            background: transparent;
             padding: 0.5rem 1rem;
-            border-right: 1px solid var(--color2);
-            border-bottom: 1px solid var(--color2);
+            border-right: 2px solid var(--color2);
+            border-bottom: 2px solid var(--color2);
             display: flex;
             flex-direction: column;
             position: relative;
@@ -210,20 +210,17 @@
         
         .links-section {
             grid-column: 2;
-            grid-row: 1 / 5;
-            background: transparent;
-            border-right: 1px solid var(--color2);
-            border-bottom: 1px solid var(--color2);
-            overflow: hidden;
+            grid-row: 1 / -1;
+            border-right: 2px solid var(--color2);
+            border-bottom: 2px solid var(--color2);
+            overflow-y: auto;
             position: relative;
             display: flex;
             flex-direction: column;
             min-height: 0;
         }
         
-        .links-section .section-header {
-            padding: 0.5rem 1rem;
-        }
+        
         
         .links-section .links-container {
             padding: 0 1rem 0.5rem 1rem;
@@ -232,9 +229,8 @@
         .emotion-section {
             grid-column: 3;
             grid-row: 1 / 3;
-            background: transparent;
             padding: 0.5rem 1rem;
-            border-bottom: 1px solid var(--color2);
+            border-bottom: 2px solid var(--color2);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -243,10 +239,9 @@
         
         .tactics-section {
             grid-column: 3;
-            grid-row: 3 / 5;
-            background: transparent;
+            grid-row: 3 / -1;
             padding: 0.5rem 1rem;
-            border-bottom: 1px solid var(--color2);
+            border-bottom: 2px solid var(--color2);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -277,8 +272,9 @@
             padding: 0.25rem 0.5rem;
             background: var(--color1);
             border: 1px solid var(--color2);
-            border-radius: 0.1875rem;
             color: var(--color4);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
             font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
@@ -313,7 +309,7 @@
             width: 100%;
             padding: 0.5rem 0.625rem;
             border: 1px solid var(--color2);
-            border-radius: 0.1875rem;
+
             background: var(--color1);
             color: var(--color4);
             font-size: 0.8125rem;
@@ -334,8 +330,7 @@
         .primary-btn {
             padding: 0.25rem 0.5rem;
             background: var(--color6);
-            border: 1px solid var(--color6);
-            border-radius: 0.1875rem;
+            border: 2px solid var(--color6);
             color: var(--color1);
             font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
@@ -364,12 +359,12 @@
         .trello-section {
             grid-column: 1;
             grid-row: 2;
-            background: transparent;
-            border-right: 1px solid var(--color2);
+            border-right: 2px solid var(--color2);
             overflow: hidden;
             position: relative;
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
         
         .trello-section iframe {
@@ -382,49 +377,44 @@
         
         .trello-eye-container {
             flex-shrink: 0;
-            padding: 0.5rem 1rem;
-            padding-bottom: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            margin-bottom: 0;
             display: flex;
             align-items: center;
+            background: var(--color3);
+            border-bottom: 2px solid var(--color2);
         }
         
         .notes-section {
             grid-column: 2;
             grid-row: 1;
-            background: transparent;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--color2);
-            border-bottom: 1px solid var(--color2);
+            border-left: 2px solid var(--color2);
+            border-right: 2px solid var(--color2);
+            border-bottom: 2px solid var(--color2);
             overflow: hidden;
-            max-height: 100%;
+            min-height: 0;
             position: relative;
         }
         
-        .trello-section {
-            grid-column: 1;
-            grid-row: 2;
-            background: transparent;
-            border-right: 1px solid var(--color2);
-            overflow: hidden;
-            position: relative;
+        .notes-section > .section-header {
+            margin-bottom: 0;
         }
         
         .projects-section {
             grid-column: 2;
             grid-row: 2;
-            background: transparent;
-            border-right: 1px solid var(--color2);
-            overflow: hidden;
+            border-left: 2px solid var(--color2);
+            border-right: 2px solid var(--color2);
+            overflow-y: auto;
             position: relative;
             display: flex;
             flex-direction: column;
             min-height: 0;
         }
         
-        .projects-section .section-header {
-            padding: 0.5rem 1rem;
-        }
+        
         
         .projects-section .links-container {
             padding: 0 1rem 0.5rem 1rem;
@@ -433,20 +423,34 @@
         h2 {
             margin-bottom: 0.625rem;
             color: var(--color5);
-            font-size: 1rem;
+            font-size: 0.8125rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
         
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--color3);
+            border-bottom: 2px solid var(--color2);
             flex-shrink: 0;
         }
         
         .section-header h2 {
             margin-bottom: 0;
+        }
+        
+        /* Bleed header to panel edges in sections that carry their own padding */
+        .timer-section > .section-header,
+        .task-section > .section-header,
+        .timezone-section > .section-header,
+        .emotion-section > .section-header,
+        .tactics-section > .section-header {
+            margin: -0.5rem -1rem 0.5rem -1rem;
         }
         
         .icon-container {
@@ -485,9 +489,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
             z-index: 10;
             display: none;
             pointer-events: none;
@@ -497,12 +501,10 @@
             display: block;
         }
         
-        .panel-section.blurred {
-            filter: blur(4px);
-        }
-        
-        .panel-section.blurred .panel-blur-overlay {
-            filter: none;
+        .panel-section {
+            background: var(--color1);
+            box-shadow: inset 1px 1px 0 0 rgba(255,255,255,0.04),
+                        inset -1px -1px 0 0 rgba(0,0,0,0.25);
         }
         
         .config-link {
@@ -532,21 +534,10 @@
         }
         
         /* Timer Section */
-        .timer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.625rem;
-        }
-        
         .timer-header-left {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-        
-        .timer-header h2 {
-            margin-bottom: 0;
         }
         
         .mute-toggle {
@@ -590,37 +581,35 @@
         
         .activity-bar {
             width: 0.1875rem;
-            height: 1.25rem;
-            background: var(--color2);
-            border-radius: 0.0625rem;
+            height: 0.875rem;
+            background: var(--color3);
+
             transition: background 0.2s;
         }
         
-        /* Timer duration colors */
+        /* Timer duration colors — match --timer-accent from button presets */
         .activity-bar.timer-5 {
-            background: var(--color5);  /* Cyan - 5 min */
+            background: var(--color5);
         }
         
         .activity-bar.timer-15 {
-            background: var(--color5);  /* Cyan - 15 min */
-            opacity: 0.8;
+            background: var(--color6);
         }
         
         .activity-bar.timer-30 {
-            background: var(--color9);  /* Purple - 30 min */
-            opacity: 0.8;
+            background: var(--color7);
         }
         
         .activity-bar.timer-45 {
-            background: var(--color9);  /* Purple - 45 min */
+            background: var(--color8);
         }
         
         .activity-bar.timer-60 {
-            background: var(--color9);  /* Purple - 60 min */
+            background: var(--color9);
         }
         
         .activity-bar.timer-custom {
-            background: var(--color7);  /* Orange - custom */
+            background: var(--color10);
         }
         
         .timer-presets {
@@ -631,7 +620,7 @@
         }
         
         .timer-preset {
-            padding: 0.09375rem 0.28125rem;
+            padding: 0.125rem 0.25rem;
             font-size: 0.75rem;
             white-space: nowrap;
             height: auto;
@@ -642,8 +631,7 @@
             justify-content: center;
             gap: 0.125rem;
             position: relative;
-            border: 0.09375rem solid var(--timer-accent, var(--color5));
-            border-radius: 0.1875rem;
+            border: 2px solid var(--timer-accent, var(--color5));
             background: transparent;
             color: var(--timer-accent, var(--color5));
             transition: background 0.2s, opacity 0.2s, color 0.2s, box-shadow 0.2s;
@@ -675,6 +663,9 @@
             font-weight: 600;
             font-variant-numeric: tabular-nums;
             line-height: 1;
+            border: 1px solid currentColor;
+            padding: 0.125rem 0.375rem;
+            letter-spacing: 0.15em;
         }
         
         .timer-preset .timer-reset {
@@ -784,7 +775,7 @@
         
         .timer-preset.custom-timer-btn {
             --timer-accent: var(--color10);
-            padding: 0.09375rem 0.28125rem;
+            padding: 0.125rem 0.25rem;
         }
         
         .custom-timer-btn .timer-duration {
@@ -837,10 +828,9 @@
         /* Task Picker Section */
         .task-display {
             flex: 1;
-            /* background: var(--color1); */
             background: transparent;
             border: none;
-            border-radius: 0.1875rem;
+
             padding: 0;
             margin-bottom: 0.625rem;
             display: flex;
@@ -856,17 +846,14 @@
         }
         
         .task-display:hover {
-            /* background: var(--color3); */
             background: transparent;
         }
-        
         
         .task-display.has-task {
             cursor: pointer;
         }
         
         .task-display.has-task:hover {
-            /* background: var(--color3); */
             background: transparent;
         }
         
@@ -877,7 +864,6 @@
         
         .task-display.has-task:has(#taskDoneLink):hover,
         .task-display.has-task:has(#taskCancelledLink):hover {
-            /* background: var(--color1); */
             background: transparent;
         }
         
@@ -892,7 +878,7 @@
             height: 1.5rem;
             border: 2px solid var(--color2);
             border-top-color: var(--color5);
-            border-radius: 50%;
+            border-radius: 50% !important;
             animation: spin 0.6s linear infinite;
         }
         
@@ -936,8 +922,7 @@
         .task-duration-btn {
             padding: 0.375rem 0.5rem;
             background: transparent;
-            border: 0.09375rem solid var(--timer-accent, var(--color5));
-            border-radius: 0.1875rem;
+            border: 2px solid var(--timer-accent, var(--color5));
             color: var(--timer-accent, var(--color5));
             font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
@@ -997,7 +982,7 @@
             flex: 1;
             padding: 0.5rem 0.625rem;
             border: 1px solid var(--color2);
-            border-radius: 0.1875rem;
+
             font-size: 0.8125rem;
             background: var(--color1);
             color: var(--color4);
@@ -1029,7 +1014,7 @@
             align-items: center;
             padding: 0.375rem 0.5rem;
             background: var(--color1);
-            border-radius: 0.1875rem;
+
             border: 1px solid var(--color2);
             font-size: 0.75rem;
         }
@@ -1039,15 +1024,10 @@
             margin-right: 0.5rem;
         }
         
-        /* .task-item button {
-            padding: 0.25rem 0.625rem;
-            font-size: 0.6875rem;
-        } */
-        
         /* Quick Links Section */
         .links-container {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 5rem));
+            grid-template-columns: repeat(4, minmax(2.5rem, 1fr));
             column-gap: 0.375rem;
             row-gap: 0.25rem;
             grid-auto-rows: auto;
@@ -1072,7 +1052,7 @@
         .timezone-config-item select {
             padding: 0.5rem 0.625rem;
             border: 1px solid var(--color2);
-            border-radius: 0.1875rem;
+
             font-size: 0.8125rem;
             background: var(--color1);
             color: var(--color4);
@@ -1087,7 +1067,7 @@
         .timezone-config-item input {
             padding: 0.5rem 0.625rem;
             border: 1px solid var(--color2);
-            border-radius: 0.1875rem;
+
             font-size: 0.8125rem;
             background: var(--color1);
             color: var(--color4);
@@ -1109,7 +1089,7 @@
         .link-input-group input {
             padding: 0.5rem 0.625rem;
             border: 1px solid var(--color2);
-            border-radius: 0.1875rem;
+
             font-size: 0.8125rem;
             background: var(--color1);
             color: var(--color4);
@@ -1141,24 +1121,23 @@
         }
         
         .link-item {
-            padding: 10px 12px;
+            padding: 0.625rem 0.5rem;
             background: transparent;
-            border-radius: 3px;
-            border: 1px solid var(--color6);
+            border: 2px solid var(--color6);
             transition: border-color 0.2s, color 0.2s;
             text-align: center;
-            font-size: 12px;
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            aspect-ratio: 1.2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 0.6875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            line-height: 1.3;
             cursor: pointer;
             color: var(--color6);
             font-family: 'JetBrains Mono', monospace;
             text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
         
         .link-item:hover {
@@ -1181,16 +1160,17 @@
         
         /* Buttons */
         button {
-            padding: 10px 24px;
+            padding: 0.5rem 1rem;
             border: 1px solid var(--color4);
-            border-radius: 3px;
             background: transparent;
             color: var(--color4);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.8125rem;
             transition: opacity 0.2s, border-color 0.2s;
-            font-weight: 500;
+            font-weight: 600;
             font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
         
         button:hover {
@@ -1243,7 +1223,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 0.1875rem;
+
             font-size: 0.875rem;
         }
         
@@ -1260,7 +1240,7 @@
         /* CodeMirror customization */
         .CodeMirror {
             height: 100% !important;
-            font-size: 14px;
+            font-size: 0.875rem;
             font-family: 'JetBrains Mono', monospace;
             background: var(--color1);
         }
@@ -1278,12 +1258,12 @@
         
         .CodeMirror-gutters {
             background: var(--color1);
-            border-right: 1px solid var(--color2);
+            border-right: 2px solid var(--color2);
         }
         
         .CodeMirror-linenumber {
             color: var(--color2);
-            padding: 0 8px 0 5px;
+            padding: 0 0.5rem 0 0.3125rem;
         }
         
         #editor-container {
@@ -1295,8 +1275,8 @@
         
         /* Scrollbar styling */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+            width: 0.625rem;
+            height: 0.625rem;
         }
         
         ::-webkit-scrollbar-track {
@@ -1305,7 +1285,7 @@
         
         ::-webkit-scrollbar-thumb {
             background: var(--color2);
-            border-radius: 2.5px;
+
         }
         
         ::-webkit-scrollbar-thumb:hover {
@@ -1313,94 +1293,336 @@
             opacity: 0.8;
         }
 
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-}
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
 
-.modal-content {
-    background-color: var(--color3);
-    margin: 10% auto;
-    padding: 1.25rem;
-    border: 1px solid var(--color2);
-    width: 90%;
-    max-width: 28rem;
-    color: var(--color4);
-    border-radius: 0.1875rem;
-}
+        .modal-content {
+            background-color: var(--color3);
+            margin: 10% auto;
+            padding: 1.25rem;
+            border: 1px solid var(--color2);
+            width: 90%;
+            max-width: 28rem;
+            color: var(--color4);
 
-.modal-content h2 {
-    margin-bottom: 1rem;
-    color: var(--color5);
-    font-size: 1rem;
-    font-weight: 600;
-}
+        }
 
-.close {
-    color: var(--color2);
-    float: right;
-    font-size: 1.5rem;
-    font-weight: bold;
-    line-height: 1;
-    cursor: pointer;
-    transition: color 0.2s;
-}
+        .modal-content h2 {
+            margin-bottom: 1rem;
+            color: var(--color5);
+            font-size: 1rem;
+            font-weight: 600;
+        }
 
-.close:hover,
-.close:focus {
-    color: var(--color4);
-    text-decoration: none;
-    cursor: pointer;
-}
+        .close {
+            color: var(--color2);
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
 
-.links-list {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-height: 18.75rem;
-    overflow-y: auto;
-    padding: 0.5rem;
-    background: var(--color1);
-    border-radius: 0.1875rem;
-    border: 1px solid var(--color2);
-}
+        .close:hover,
+        .close:focus {
+            color: var(--color4);
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-.links-list .link-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.375rem 0.5rem;
-    background: var(--color3);
-    border-radius: 0.1875rem;
-    border: 1px solid var(--color2);
-    gap: 0.75rem;
-    min-height: auto;
-    aspect-ratio: auto;
-    width: auto;
-    height: auto;
-    white-space: normal;
-    text-align: left;
-}
+        .links-list {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 18.75rem;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: var(--color1);
 
-.links-list .link-item a {
-    flex: 1;
-    color: var(--color5);
-    text-decoration: none;
-    font-size: 0.875rem;
-}
+            border: 1px solid var(--color2);
+        }
 
-.links-list .link-item a:hover {
-    color: var(--color5);
-    opacity: 0.8;
-}
+        .links-list .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.375rem 0.5rem;
+            background: var(--color3);
+
+            border: 1px solid var(--color2);
+            gap: 0.75rem;
+            min-height: auto;
+            aspect-ratio: auto;
+            width: auto;
+            height: auto;
+            white-space: normal;
+            text-align: left;
+        }
+
+        .links-list .link-item a {
+            flex: 1;
+            color: var(--color5);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .links-list .link-item a:hover {
+            color: var(--color5);
+            opacity: 0.8;
+        }
+
+        /* Config modal labels */
+        .config-label {
+            font-size: 0.75rem;
+            color: var(--color2);
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .config-label--spaced {
+            margin-bottom: 0.375rem;
+        }
+
+        /* Config modal input/select spacing */
+        .config-input-sm {
+            margin-bottom: 0.375rem;
+        }
+
+        .config-input-lg {
+            margin-bottom: 0.75rem;
+        }
+
+        /* Data management modal */
+        .data-mgmt-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .data-mgmt-sections h3 {
+            font-size: 0.875rem;
+            color: var(--color4);
+            margin-bottom: 0.5rem;
+        }
+
+        .data-mgmt-sections p {
+            font-size: 0.75rem;
+            color: var(--color2);
+            margin-bottom: 0.75rem;
+        }
+
+        .data-mgmt-divider {
+            border-top: 2px solid var(--color2);
+            padding-top: 1rem;
+        }
+
+        /* Accepted task display (JS-rendered) */
+        .accepted-task-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+            width: 100%;
+        }
+
+        .accepted-task-label {
+            font-size: 0.75rem;
+            color: var(--color2);
+            text-transform: uppercase;
+        }
+
+        .accepted-task-name {
+            font-size: 0.875rem;
+        }
+
+        .accepted-task-actions {
+            display: flex;
+            gap: 0.625rem;
+            justify-content: center;
+            margin-top: 0.625rem;
+        }
+
+        .task-action-link {
+            text-decoration: none;
+            font-size: 0.8125rem;
+        }
+
+        .task-action-link--done {
+            color: var(--color6);
+        }
+
+        .task-action-link--cancel {
+            color: var(--color10);
+        }
+
+        .task-action-separator {
+            color: var(--color2);
+        }
+
+        /* List item layout (links/projects in modal) */
+        .list-item-row {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .list-item-arrows {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+
+        .list-item-link {
+            flex: 1;
+            text-decoration: none;
+            color: var(--color5);
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        /* Arrow buttons in list items */
+        .icon-button--arrow {
+            padding: 0.125rem;
+            font-size: 0.625rem;
+        }
+
+        .icon-button--disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Task config item layout */
+        .task-item-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .task-item-name {
+            font-weight: 600;
+        }
+
+        .task-item-meta {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.6875rem;
+            color: var(--color2);
+        }
+
+        /* Tactic item text */
+        .tactic-item-text {
+            flex: 1;
+            color: var(--color4);
+            font-size: 0.875rem;
+        }
+
+        
+
+        .hidden-input {
+            display: none;
+        }
+
+        /* Custom duration input (shown/hidden by JS) */
+        #taskDurationCustom {
+            margin-top: 0.375rem;
+            padding: 0.375rem 0.5rem;
+            border: 1px solid var(--color2);
+
+            background: var(--color1);
+            color: var(--color4);
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Responsive: reorganize when viewport is narrower than grid's min-width */
+        @media (max-width: 64rem) {
+            body {
+                overflow: auto;
+            }
+
+            .layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+                min-width: 0;
+                min-height: 0;
+                height: auto;
+            }
+
+            .top-left {
+                grid-column: 1;
+                grid-row: 1;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto auto auto;
+            }
+
+            .timer-section {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .task-section {
+                grid-column: 1;
+                grid-row: 2;
+                min-height: 8rem;
+            }
+
+            .timezone-section {
+                grid-column: 1;
+                grid-row: 3 / -1;
+            }
+
+            .links-section {
+                grid-column: 2;
+                grid-row: 1 / 3;
+                overflow-y: auto;
+            }
+
+            .emotion-section {
+                grid-column: 2;
+                grid-row: 3;
+                border-right: none;
+            }
+
+            .tactics-section {
+                grid-column: 2;
+                grid-row: 4;
+                border-right: none;
+            }
+
+            .notes-section {
+                grid-column: 1;
+                grid-row: 2;
+                min-height: 16rem;
+            }
+
+            .trello-section {
+                grid-column: 1;
+                grid-row: 3;
+                min-height: 20rem;
+            }
+
+            .projects-section {
+                grid-column: 1;
+                grid-row: 4;
+                min-height: 8rem;
+            }
+        }
 
     </style>
 </head>
@@ -1419,7 +1641,7 @@
             <!-- Timer Section -->
             <div class="timer-section panel-section">
                 <div class="panel-blur-overlay"></div>
-                <div class="timer-header">
+                <div class="section-header">
                     <div class="timer-header-left">
                         <div class="panel-toggle">
                             <div class="icon-container">
@@ -1469,7 +1691,7 @@
                         <span class="timer-display"></span>
                         <span class="timer-reset">reset</span>
                     </button>
-                    <button class="timer-preset custom-timer-btn" onclick="handleCustomTimerClick()">
+                    <button class="timer-preset custom-timer-btn" onclick="handleCustomTimerClick(this, event)">
                         <span class="timer-label">
                             <span class="timer-duration" contenteditable="true" data-placeholder="XX">XX</span>
                         </span>
@@ -1536,7 +1758,7 @@
                             <input type="text" id="taskInput" placeholder="Task name...">
                         </div>
                         <div class="task-duration-presets">
-                            <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.375rem; display: block;">Duration:</label>
+                            <label class="config-label config-label--spaced">Duration:</label>
                             <div class="task-duration-buttons">
                                 <button class="task-duration-btn" data-duration="5" onclick="selectTaskDuration(5)">5</button>
                                 <button class="task-duration-btn" data-duration="15" onclick="selectTaskDuration(15)">15</button>
@@ -1545,7 +1767,7 @@
                                 <button class="task-duration-btn" data-duration="60" onclick="selectTaskDuration(60)">60</button>
                                 <button class="task-duration-btn custom" data-duration="custom" onclick="selectTaskDuration('custom')">Custom</button>
                             </div>
-                            <input type="number" id="taskDurationCustom" placeholder="min" min="1" max="999" style="display: none; margin-top: 0.375rem; padding: 0.375rem 0.5rem; border: 1px solid var(--color2); border-radius: 0.1875rem; background: var(--color1); color: var(--color4); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">
+                            <input type="number" id="taskDurationCustom" class="hidden-input config-input-sm" placeholder="min" min="1" max="999">
                         </div>
                         <div class="task-input-group">
                             <input type="text" id="taskTags" placeholder="Tags (comma-separated, e.g., urgent,work)">
@@ -1640,7 +1862,7 @@
                     <div class="link-input-row">
                         <input type="url" id="linkUrl" placeholder="https://example.com">
                         <button class="primary-btn" id="linkAddBtn" onclick="addLink()">Add</button>
-                        <button class="secondary" id="linkCancelBtn" onclick="cancelEditLink()" style="display: none;">Cancel</button>
+                        <button class="secondary hidden-input" id="linkCancelBtn" onclick="cancelEditLink()">Cancel</button>
                     </div>
                 </div>
                     <div class="links-list" id="linksList"></div>
@@ -1651,7 +1873,7 @@
         <!-- Notes Section -->
         <div class="notes-section panel-section">
             <div class="panel-blur-overlay"></div>
-            <div class="section-header" style="padding: 1rem; padding-bottom: 0.5rem;">
+            <div class="section-header">
                 <div class="panel-toggle">
                     <div class="icon-container">
                         <i class="fa-solid fa-eye eye-icon" onclick="togglePanelBlur('notes-section')" aria-label="Toggle blur"></i>
@@ -1707,7 +1929,7 @@
                     <div class="link-input-row">
                         <input type="url" id="projectUrl" placeholder="https://example.com">
                         <button class="primary-btn" id="projectAddBtn" onclick="addProject()">Add</button>
-                        <button class="secondary" id="projectCancelBtn" onclick="cancelEditProject()" style="display: none;">Cancel</button>
+                        <button class="secondary hidden-input" id="projectCancelBtn" onclick="cancelEditProject()">Cancel</button>
                     </div>
                 </div>
                 <div class="links-list" id="projectsList"></div>
@@ -1721,24 +1943,24 @@
                 <h2>Configure Time zones</h2>
                 <div class="timezone-config-group">
                     <div class="timezone-config-item">
-                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 1:</label>
-                        <input type="text" id="timezone1Label" placeholder="Label" style="margin-bottom: 0.375rem;">
-                        <select id="timezone1Tz" style="margin-bottom: 0.75rem;"></select>
+                        <label class="config-label">Timezone 1:</label>
+                        <input type="text" id="timezone1Label" class="config-input-sm" placeholder="Label">
+                        <select id="timezone1Tz" class="config-input-lg"></select>
                     </div>
                     <div class="timezone-config-item">
-                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 2:</label>
-                        <input type="text" id="timezone2Label" placeholder="Label" style="margin-bottom: 0.375rem;">
-                        <select id="timezone2Tz" style="margin-bottom: 0.75rem;"></select>
+                        <label class="config-label">Timezone 2:</label>
+                        <input type="text" id="timezone2Label" class="config-input-sm" placeholder="Label">
+                        <select id="timezone2Tz" class="config-input-lg"></select>
                     </div>
                     <div class="timezone-config-item">
-                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 3:</label>
-                        <input type="text" id="timezone3Label" placeholder="Label" style="margin-bottom: 0.375rem;">
-                        <select id="timezone3Tz" style="margin-bottom: 0.75rem;"></select>
+                        <label class="config-label">Timezone 3:</label>
+                        <input type="text" id="timezone3Label" class="config-input-sm" placeholder="Label">
+                        <select id="timezone3Tz" class="config-input-lg"></select>
                     </div>
                     <div class="timezone-config-item">
-                        <label style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.25rem; display: block;">Timezone 4:</label>
-                        <input type="text" id="timezone4Label" placeholder="Label" style="margin-bottom: 0.375rem;">
-                        <select id="timezone4Tz" style="margin-bottom: 0.75rem;"></select>
+                        <label class="config-label">Timezone 4:</label>
+                        <input type="text" id="timezone4Label" class="config-input-sm" placeholder="Label">
+                        <select id="timezone4Tz" class="config-input-lg"></select>
                     </div>
                     <button class="primary-btn" onclick="saveTimezoneConfig()">Save</button>
                 </div>
@@ -1763,22 +1985,18 @@
             <div class="modal-content">
                 <span class="close" onclick="hideDataManagement()">&times;</span>
                 <h2>Data Management</h2>
-                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                <div class="data-mgmt-sections">
                     <div>
-                        <h3 style="font-size: 0.875rem; color: var(--color4); margin-bottom: 0.5rem;">Export Data</h3>
-                        <p style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.75rem;">
-                            Download all your data as a JSON backup file.
-                        </p>
+                        <h3>Export Data</h3>
+                        <p>Download all your data as a JSON backup file.</p>
                         <button class="primary-btn" onclick="exportLocalStorage()">
                             <i class="fa-solid fa-download"></i> Export Data
                         </button>
                     </div>
-                    <div style="border-top: 1px solid var(--color2); padding-top: 1rem;">
-                        <h3 style="font-size: 0.875rem; color: var(--color4); margin-bottom: 0.5rem;">Import Data</h3>
-                        <p style="font-size: 0.75rem; color: var(--color2); margin-bottom: 0.75rem;">
-                            Restore data from a previously exported backup file.
-                        </p>
-                        <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="importLocalStorage(event)">
+                    <div class="data-mgmt-divider">
+                        <h3>Import Data</h3>
+                        <p>Restore data from a previously exported backup file.</p>
+                        <input type="file" id="importFileInput" class="hidden-input" accept=".json" onchange="importLocalStorage(event)">
                         <button class="primary-btn" onclick="document.getElementById('importFileInput').click()">
                             <i class="fa-solid fa-upload"></i> Import Data
                         </button>
@@ -2092,13 +2310,13 @@
             // Show accepted task with completion options
             const display = document.getElementById('taskDisplay');
             display.innerHTML = `
-                <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                    <div style="font-size: 12px; color: var(--color2); text-transform: uppercase;">Current Task:</div>
-                    <div style="font-size: 14px; color: ${currentTaskColor || 'var(--color4)'};">${currentTask.name}</div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-                        <a href="#" id="taskDoneLink" style="color: var(--color6); text-decoration: none; font-size: 13px;">Task Done</a>
-                        <span style="color: var(--color2);">|</span>
-                        <a href="#" id="taskCancelledLink" style="color: var(--color10); text-decoration: none; font-size: 13px;">Task Cancelled</a>
+                <div class="accepted-task-container">
+                    <div class="accepted-task-label">Current Task:</div>
+                    <div class="accepted-task-name" style="color: ${currentTaskColor || 'var(--color4)'};">${currentTask.name}</div>
+                    <div class="accepted-task-actions">
+                        <a href="#" id="taskDoneLink" class="task-action-link task-action-link--done">Task Done</a>
+                        <span class="task-action-separator">|</span>
+                        <a href="#" id="taskCancelledLink" class="task-action-link task-action-link--cancel">Task Cancelled</a>
                     </div>
                 </div>
                 <span class="task-spinner"></span>
@@ -2285,11 +2503,11 @@
                 const linkEl = document.createElement('a');
                 
                 if (i < links.length && links[i].url) {
-                    // Link exists - render it normally
                     linkEl.className = 'link-item';
                     linkEl.href = links[i].url;
                     linkEl.target = '_blank';
                     linkEl.textContent = links[i].name;
+                    linkEl.title = links[i].name;
                 } else {
                     // Empty slot - render with gray styling
                     linkEl.className = 'link-item empty';
@@ -2437,11 +2655,11 @@
                 const projectEl = document.createElement('a');
                 
                 if (i < projects.length && projects[i].url) {
-                    // Project exists - render it normally
                     projectEl.className = 'link-item';
                     projectEl.href = projects[i].url;
                     projectEl.target = '_blank';
                     projectEl.textContent = projects[i].name;
+                    projectEl.title = projects[i].name;
                 } else {
                     // Empty slot - render with gray styling
                     projectEl.className = 'link-item empty';
@@ -2646,12 +2864,22 @@
         const MAX_ACTIVITY_CELLS = 24;
         
         function loadActivityLog() {
+            const today = new Date().toLocaleDateString('en-CA');
+            const lastDate = localStorage.getItem('timerActivityDate');
+
+            if (lastDate !== today) {
+                localStorage.setItem('timerActivityLog', '[]');
+                localStorage.setItem('timerActivityDate', today);
+                return [];
+            }
+
             const stored = localStorage.getItem('timerActivityLog');
             return stored ? JSON.parse(stored) : [];
         }
         
         function saveActivityLog(log) {
             localStorage.setItem('timerActivityLog', JSON.stringify(log));
+            localStorage.setItem('timerActivityDate', new Date().toLocaleDateString('en-CA'));
         }
         
         function addTimerActivity(minutes) {
@@ -2794,19 +3022,18 @@
                     
                     updateTimerButtons();
                     
-                    if (!isMuted) {
-                        if (Notification.permission === "granted") {
-                            new Notification("Timer Complete", { body: "Time is up!" });
-                        } else {
-                            alert('Time is up!');
-                        }
-                        }
+                    // Notification shown regardless of mute (mute only affects sound)
+                    if (Notification.permission === "granted") {
+                        new Notification("Timer Complete", { body: "Time is up!" });
+                    } else {
+                        alert('Time is up!');
+                    }
                     }
                 }, 1000);
             }
         
         function handleTimerClick(minutes, buttonElement) {
-            const clickedButton = buttonElement || event?.currentTarget || document.querySelector(`[data-minutes="${minutes}"]`);
+            const clickedButton = buttonElement || document.querySelector(`[data-minutes="${minutes}"]`);
             
             if (!clickedButton) {
                 console.error('Could not find timer button');
@@ -2879,19 +3106,18 @@
                     
                     updateTimerButtons();
                     
-                    if (!isMuted) {
-                        if (Notification.permission === "granted") {
-                            new Notification("Timer Complete", { body: "Time is up!" });
-                        } else {
-                            alert('Time is up!');
-                        }
+                    // Notification shown regardless of mute (mute only affects sound)
+                    if (Notification.permission === "granted") {
+                        new Notification("Timer Complete", { body: "Time is up!" });
+                    } else {
+                        alert('Time is up!');
                     }
                 }
             }, 1000);
         }
         
-        function handleCustomTimerClick() {
-            const clickedButton = event?.currentTarget || document.querySelector('.timer-preset.custom-timer-btn');
+        function handleCustomTimerClick(buttonElement, sourceEvent) {
+            const clickedButton = buttonElement || document.querySelector('.timer-preset.custom-timer-btn');
             
             if (!clickedButton) {
                 console.error('Could not find custom timer button');
@@ -2899,7 +3125,7 @@
             }
             
             // Don't start timer if clicking on the editable duration span
-            if (event?.target?.classList.contains('timer-duration')) {
+            if (sourceEvent?.target?.classList.contains('timer-duration')) {
                 return;
             }
             
@@ -3005,12 +3231,11 @@
                     
                     updateTimerButtons();
                     
-                    if (!isMuted) {
-                        if (Notification.permission === "granted") {
-                            new Notification("Timer Complete", { body: "Time is up!" });
-                        } else {
-                            alert('Time is up!');
-                        }
+                    // Notification shown regardless of mute (mute only affects sound)
+                    if (Notification.permission === "granted") {
+                        new Notification("Timer Complete", { body: "Time is up!" });
+                    } else {
+                        alert('Time is up!');
                     }
                 }
             }, 1000);
@@ -3063,12 +3288,13 @@
         
         // Add Enter key handler for custom timer duration
         const customDurationSpan = document.querySelector('.custom-timer-btn .timer-duration');
+        const customTimerBtn = document.querySelector('.timer-preset.custom-timer-btn');
         if (customDurationSpan) {
             customDurationSpan.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleCustomTimerClick();
+                    handleCustomTimerClick(customTimerBtn);
                 }
             });
             
@@ -3090,7 +3316,7 @@
             updateMuteButton();
             
             // If timer is running, stop or start beeping based on mute state
-            if (isRunning && !isMuted) {
+            if (isRunning && !isMuted && timeRemaining <= 3) {
                 startBeeping();
             } else if (isMuted) {
                 stopBeeping();
@@ -3281,9 +3507,9 @@ function renderTasksInModal() {
         const taskDiv = document.createElement('div');
         taskDiv.className = 'task-item';
         taskDiv.innerHTML = `
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 0.25rem;">
-                <span style="font-weight: 600;">${task.name}</span>
-                <div style="display: flex; gap: 0.5rem; font-size: 0.6875rem; color: var(--color2);">
+            <div class="task-item-content">
+                <span class="task-item-name">${task.name}</span>
+                <div class="task-item-meta">
                     <span>Duration: ${task.duration} min</span>
                     ${task.tags ? `<span>Tags: ${task.tags}</span>` : ''}
                 </div>
@@ -3305,18 +3531,18 @@ function renderLinksInModal() {
         linkDiv.className = 'link-item';
         linkDiv.style.cursor = 'default';
         linkDiv.innerHTML = `
-            <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem;">
-                <div style="display: flex; flex-direction: column; gap: 0.125rem;">
-                    <button class="icon-button" onclick="moveLinkUp(${index})" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move up">
+            <div class="list-item-row">
+                <div class="list-item-arrows">
+                    <button class="icon-button icon-button--arrow ${index === 0 ? 'icon-button--disabled' : ''}" onclick="moveLinkUp(${index})" ${index === 0 ? 'disabled' : ''} aria-label="Move up">
                         <i class="fa-solid fa-chevron-up"></i>
                     </button>
-                    <button class="icon-button" onclick="moveLinkDown(${index})" ${index === links.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move down">
+                    <button class="icon-button icon-button--arrow ${index === links.length - 1 ? 'icon-button--disabled' : ''}" onclick="moveLinkDown(${index})" ${index === links.length - 1 ? 'disabled' : ''} aria-label="Move down">
                         <i class="fa-solid fa-chevron-down"></i>
                     </button>
                 </div>
-                <a href="${link.url}" target="_blank" style="flex: 1; text-decoration: none; color: var(--color5);">${link.name}</a>
+                <a href="${link.url}" target="_blank" class="list-item-link">${link.name}</a>
             </div>
-            <div style="display: flex; gap: 0.25rem;">
+            <div class="list-item-actions">
                 <button class="icon-button" onclick="editLink(${index})" aria-label="Edit link">
                     <i class="fa-solid fa-edit"></i>
                 </button>
@@ -3357,18 +3583,18 @@ function renderProjectsInModal() {
         projectDiv.className = 'link-item';
         projectDiv.style.cursor = 'default';
         projectDiv.innerHTML = `
-            <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem;">
-                <div style="display: flex; flex-direction: column; gap: 0.125rem;">
-                    <button class="icon-button" onclick="moveProjectUp(${index})" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move up">
+            <div class="list-item-row">
+                <div class="list-item-arrows">
+                    <button class="icon-button icon-button--arrow ${index === 0 ? 'icon-button--disabled' : ''}" onclick="moveProjectUp(${index})" ${index === 0 ? 'disabled' : ''} aria-label="Move up">
                         <i class="fa-solid fa-chevron-up"></i>
                     </button>
-                    <button class="icon-button" onclick="moveProjectDown(${index})" ${index === projects.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="padding: 0.125rem; font-size: 0.625rem;"'} aria-label="Move down">
+                    <button class="icon-button icon-button--arrow ${index === projects.length - 1 ? 'icon-button--disabled' : ''}" onclick="moveProjectDown(${index})" ${index === projects.length - 1 ? 'disabled' : ''} aria-label="Move down">
                         <i class="fa-solid fa-chevron-down"></i>
                     </button>
                 </div>
-                <a href="${project.url}" target="_blank" style="flex: 1; text-decoration: none; color: var(--color5);">${project.name}</a>
+                <a href="${project.url}" target="_blank" class="list-item-link">${project.name}</a>
             </div>
-            <div style="display: flex; gap: 0.25rem;">
+            <div class="list-item-actions">
                 <button class="icon-button" onclick="editProject(${index})" aria-label="Edit project">
                     <i class="fa-solid fa-edit"></i>
                 </button>
@@ -3857,7 +4083,7 @@ function renderTacticsInModal() {
         const tacticDiv = document.createElement('div');
         tacticDiv.className = 'link-item';
         tacticDiv.innerHTML = `
-            <span style="flex: 1; color: var(--color4); font-size: 0.875rem;">${tactic}</span>
+            <span class="tactic-item-text">${tactic}</span>
             <button class="danger icon-button" onclick="deleteTactic(${index})" aria-label="Delete tactic">
                 <i class="fa-solid fa-trash"></i>
             </button>
@@ -3937,6 +4163,7 @@ function exportLocalStorage() {
             'taskStats',
             'emotionLogs',
             'timerActivityLog',
+            'timerActivityDate',
             'timerMuted',
             'links',
             'projects',
