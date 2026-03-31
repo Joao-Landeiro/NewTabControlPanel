@@ -567,10 +567,46 @@
             opacity: 0.4;
         }
         
-        .activity-bars {
-            display: flex;
-            gap: 0.125rem;
-            align-items: center;
+        .timer-section > .section-header {
+            min-width: 0;
+        }
+
+        .timer-section .section-header h2 {
+            flex-shrink: 0;
+        }
+
+        .timer-section .header-icons {
+            flex: 1 1 auto;
+            min-width: 0;
+            justify-content: flex-end;
+        }
+
+        .activity-bars-clip {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .timer-section .activity-bars {
+            display: block;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .activity-bars-line {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--color4);
+            font-size: 0.5rem;
+            line-height: 1;
+            text-align: left;
+        }
+
+        .timer-section .mute-toggle,
+        .timer-section .header-icons > .icon-container {
+            flex-shrink: 0;
         }
         
         .activity-bar {
@@ -1645,7 +1681,9 @@
                 <div class="section-header">
                     <h2>Timer</h2>
                     <div class="header-icons">
-                        <div class="activity-bars" id="activityBars"></div>
+                        <div class="activity-bars-clip" id="activityBarsClip">
+                            <div class="activity-bars" id="activityBars"></div>
+                        </div>
                         <button id="muteToggle" class="mute-toggle" onclick="toggleMute()" title="Mute timer" aria-label="Mute timer">
                             <i class="fa-solid fa-bell" aria-hidden="true"></i>
                         </button>
@@ -2887,6 +2925,11 @@
             return `${minutes} ${unit}`;
         }
 
+        function formatActivityLogSummary(log) {
+            if (!log || log.length === 0) return 'No timer activity today';
+            return log.map(e => formatTimerMinutesTitle(e.minutes)).join(' · ');
+        }
+
         function updateCustomTimerShape() {
             const customBtn = document.querySelector('.timer-preset.custom-timer-btn');
             if (!customBtn) return;
@@ -2955,26 +2998,24 @@
         
         function renderActivityBars() {
             const container = document.getElementById('activityBars');
+            const clip = document.getElementById('activityBarsClip');
+            if (!container) return;
+
             container.innerHTML = '';
-            
+
             const activityLog = loadActivityLog();
-            
-            // Create all 24 bars
-            for (let i = 0; i < MAX_ACTIVITY_CELLS; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'activity-bar';
-                
-                // If we have activity for this position
-                if (activityLog[i]) {
-                    bar.classList.add(activityLog[i].class);
-                    bar.textContent = getDurationShape(activityLog[i].minutes);
-                    bar.title = formatTimerMinutesTitle(activityLog[i].minutes);
-                } else {
-                    bar.title = 'No timer';
-                }
-                
-                container.appendChild(bar);
+            if (clip) {
+                clip.title = formatActivityLogSummary(activityLog);
             }
+
+            if (activityLog.length === 0) {
+                return;
+            }
+
+            const line = document.createElement('span');
+            line.className = 'activity-bars-line';
+            line.textContent = activityLog.map(e => getDurationShape(e.minutes)).join(' ');
+            container.appendChild(line);
         }
         
         function formatTime(seconds) {
