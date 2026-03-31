@@ -574,9 +574,15 @@
         }
         
         .activity-bar {
-            width: 0.1875rem;
+            width: 0.5rem;
             height: 0.875rem;
             background: var(--color3);
+            color: var(--color4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            line-height: 1;
 
             transition: background 0.2s;
         }
@@ -637,6 +643,14 @@
             align-items: center;
             justify-content: center;
             gap: 0.125rem;
+        }
+
+        .timer-preset .timer-shape {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            font-size: 0.6875rem;
         }
         
         .timer-preset .timer-duration {
@@ -1643,6 +1657,7 @@
                 <div class="timer-presets">
                     <button class="timer-preset" data-minutes="5" onclick="handleTimerClick(5, this)">
                         <span class="timer-label">
+                            <span class="timer-shape" aria-hidden="true">▲</span>
                             <span class="timer-duration">05</span>
                         </span>
                         <span class="timer-display"></span>
@@ -1650,6 +1665,7 @@
                     </button>
                     <button class="timer-preset" data-minutes="15" onclick="handleTimerClick(15, this)">
                         <span class="timer-label">
+                            <span class="timer-shape" aria-hidden="true">▮</span>
                             <span class="timer-duration">15</span>
                         </span>
                         <span class="timer-display"></span>
@@ -1657,6 +1673,7 @@
                     </button>
                     <button class="timer-preset" data-minutes="30" onclick="handleTimerClick(30, this)">
                         <span class="timer-label">
+                            <span class="timer-shape" aria-hidden="true">■</span>
                             <span class="timer-duration">30</span>
                         </span>
                         <span class="timer-display"></span>
@@ -1664,6 +1681,7 @@
                     </button>
                     <button class="timer-preset" data-minutes="45" onclick="handleTimerClick(45, this)">
                         <span class="timer-label">
+                            <span class="timer-shape" aria-hidden="true">◆</span>
                             <span class="timer-duration">45</span>
                         </span>
                         <span class="timer-display"></span>
@@ -1671,6 +1689,7 @@
                     </button>
                     <button class="timer-preset" data-minutes="60" onclick="handleTimerClick(60, this)">
                         <span class="timer-label">
+                            <span class="timer-shape" aria-hidden="true">⬢</span>
                             <span class="timer-duration">60</span>
                         </span>
                         <span class="timer-display"></span>
@@ -1678,6 +1697,7 @@
                     </button>
                     <button class="timer-preset custom-timer-btn" onclick="handleCustomTimerClick(this, event)">
                         <span class="timer-label">
+                            <span class="timer-shape" aria-hidden="true">●</span>
                             <span class="timer-duration" contenteditable="true" data-placeholder="XX">XX</span>
                         </span>
                         <span class="timer-display"></span>
@@ -2850,6 +2870,42 @@
         
         // Activity tracking
         const MAX_ACTIVITY_CELLS = 24;
+
+        function getDurationShape(minutes) {
+            if (minutes === 5) return '▲';
+            if (minutes === 15) return '▮';
+            if (minutes === 30) return '■';
+            if (minutes === 45) return '◆';
+            if (minutes === 60) return '⬢';
+            if (typeof minutes === 'number' && minutes > 60) return '●';
+            return '';
+        }
+
+        function formatTimerMinutesTitle(minutes) {
+            if (!minutes || minutes <= 0) return 'No timer';
+            const unit = minutes === 1 ? 'minute' : 'minutes';
+            return `${minutes} ${unit}`;
+        }
+
+        function updateCustomTimerShape() {
+            const customBtn = document.querySelector('.timer-preset.custom-timer-btn');
+            if (!customBtn) return;
+
+            const shapeSpan = customBtn.querySelector('.timer-shape');
+            if (!shapeSpan) return;
+
+            const durationSpan = customBtn.querySelector('.timer-duration');
+            const parsed = parseInt((durationSpan?.textContent || '').trim(), 10);
+
+            // Default to circle for "custom/unknown", but snap to preset shapes when exact match.
+            if (!parsed || parsed <= 0) {
+                shapeSpan.textContent = '●';
+                return;
+            }
+
+            const shape = getDurationShape(parsed);
+            shapeSpan.textContent = shape || '●';
+        }
         
         function loadActivityLog() {
             const today = new Date().toLocaleDateString('en-CA');
@@ -2911,7 +2967,8 @@
                 // If we have activity for this position
                 if (activityLog[i]) {
                     bar.classList.add(activityLog[i].class);
-                    bar.title = `${activityLog[i].minutes} minute timer`;
+                    bar.textContent = getDurationShape(activityLog[i].minutes);
+                    bar.title = formatTimerMinutesTitle(activityLog[i].minutes);
                 } else {
                     bar.title = 'No timer';
                 }
@@ -3142,6 +3199,7 @@
                         durationSpan.textContent = 'XX';
                         durationSpan.contentEditable = 'true';
                     }
+                    updateCustomTimerShape();
                     updateTimerButtons();
                 }
                 return;
@@ -3211,6 +3269,7 @@
                             }
                         }
                     }
+                    updateCustomTimerShape();
                     
                     // Add timer to activity log when it completes
                     if (window.currentTimerMinutes) {
@@ -3231,6 +3290,7 @@
         
         // Initialize activity bars
         renderActivityBars();
+        updateCustomTimerShape();
         
         // Allow Enter key for inputs
         document.getElementById('linkUrl').addEventListener('keypress', function(e) {
@@ -3289,6 +3349,11 @@
             // Only allow numbers
             customDurationSpan.addEventListener('input', function(e) {
                 this.textContent = this.textContent.replace(/[^0-9]/g, '');
+                updateCustomTimerShape();
+            });
+
+            customDurationSpan.addEventListener('blur', function() {
+                updateCustomTimerShape();
             });
         }
         
